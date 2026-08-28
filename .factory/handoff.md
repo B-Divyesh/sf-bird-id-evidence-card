@@ -1,42 +1,42 @@
-# Bird ID Evidence Card — verifier handoff
+# Bird ID Evidence Card — repair handoff
 
-## Verification status: FAIL
+## Status: ready for deployment
 
-Independent QA of candidate `ac491c75725fb2cdb35c97c229a6aedfa59f4ff0` against <https://bird-id-evidence-card.sociobot.in> completed on 28 August 2026. The live deployment matches the candidate, but the candidate does not satisfy the acceptance contract.
+This repair replaces the failed candidate `ac491c75725fb2cdb35c97c229a6aedfa59f4ff0` identified in the independent verifier report. Product repair commit: `afdb8633d11cb63ec03b271720cfccf80bbe6727` (`fix: resolve verification release blockers`). The artifact remains a Vite + TypeScript, static-deployed, local-first PWA; `npm run build` writes `dist/index.html` at its root.
 
-Release blocker: the dark theme has an axe **serious** contrast failure on the evidence-card footer status/privacy text and the site-footer product name. Each measures 1.07:1 instead of the required 4.5:1.
+## Repairs made
 
-Also reproduced:
+- **Dark treatment contrast:** the dark evidence-card footer and site footer now use the light `--ink` foreground on `#0d1411`, rather than the dark background token. This corrects `#preview-status`, `#preview-privacy`, and the footer product name.
+- **Evidence-number integrity:** new IDs are allocated in an IndexedDB transaction from a per-observation-day high-water mark. The mark is retained after deletion and advances during import, so `BID-YYYYMMDD-NNN` values are never reissued after a deletion or a restored backup.
+- **Mobile targets:** the header wordmark and footer links have explicit 44 × 44 CSS-pixel minimum targets at the 390 px breakpoint.
+- **Landmarks and recovery:** the nested preview `aside` is now a labelled non-landmark container, eliminating axe’s nested-complementary result. Malformed backup recovery remains safe and visible without emitting an expected `console.error`.
+- **Regression coverage:** unit coverage verifies retained high-water allocation. Playwright now tests dark axe with no violations, actual save/delete/save allocation in IndexedDB, 390 px target dimensions, and malformed-backup console cleanliness. Typecheck/lint commands are exposed in `package.json`.
 
-- Medium: deleting an earlier same-day card allows a later card to reuse an existing `BID-YYYYMMDD-NNN` number; two records were both assigned `BID-20260828-002`.
-- Low: the 390 px header wordmark is 40 px high and footer legal/navigation links are 19.6 px high, below the 44 px touch-target requirement.
-- Low: axe reports one moderate nested complementary-landmark issue.
-- Low/deployment: hashed assets use a 30-second revalidating cache rather than immutable caching; the manifest is served as `application/octet-stream` (Chromium nevertheless parses it without errors).
-- Low: malformed import is safely rejected but emits the caught exception as a console error.
+## Verification evidence
 
-The full evidence, reproduction steps, response headers, hashes, workflows, and measurements are in [`.factory/verification.md`](verification.md).
-
-## What passed
-
-- Clean locked install; `npm test` (5 unit + 8 Playwright), `npx tsc --noEmit`, exact `npm run build`, and `npm audit --audit-level=low` all pass. No lint command exists.
-- The researched uncertain-identification workflow works end to end, including conflicting observations, multiple candidates, confidence, reference provenance, decision trail, local save/reopen, Markdown/CSV, and JSON backup/import.
-- Invalid required values, URL and coordinate validation, import recovery, deletion confirmation, candidate limit, empty state, and coordinate privacy were exercised.
-- IndexedDB persistence, installed service-worker update toast/reload, offline app/legal reload, and live 390 px offline editing pass.
-- Only same-origin requests occur; reference URLs are not fetched; no cookies, analytics, trackers, remote fonts/scripts, or application API traffic were observed.
-- Responsive layouts at 1280 px and 390 px have no horizontal overflow; keyboard skip/focus and reduced motion work.
-- Initial/normal loads have zero console or page errors. Light-theme axe has zero serious/critical findings.
-- Bundle budgets pass: 24,718-byte JS, 21,633-byte CSS, 14,501-byte mobile AVIF, no fonts, and 465,607-byte total `dist/`.
-- Lighthouse mobile: local and live are 100/100/100/100; live FCP 0.9 s, LCP 1.2 s, TBT 0 ms, CLS 0, 64 KiB transfer.
-- Deployment identity: 18 deterministic output files are byte-identical to the candidate; the service worker differs only by its generated cache timestamp.
-
-## Re-run
+Run from a clean locked install on 2026-08-28 (Node 22 / npm 10):
 
 ```sh
-npm ci
-npm test
-npx tsc --noEmit
-npm audit --audit-level=low
-npm run build
+npm ci                         # 70 packages, audit 0 vulnerabilities
+npm run typecheck              # pass
+npm run lint                   # pass
+npm audit --audit-level=low    # pass, 0 vulnerabilities
+npm test                       # pass: 6 Vitest + 16 Playwright project runs
+npm run build                  # pass; dist/ produced
 ```
 
-For acceptance, add a dark-color-scheme axe run to Playwright and reproduce the delete/save numbering sequence before rechecking the deployed replacement.
+`npm test` exercised desktop Chromium and mobile Chromium. It covered the complete save/reload/reopen/export workflow, keyboard skip-link navigation, light and dark axe scans, 390 × 844 touch targets, malformed recovery, coordinate privacy, and installed-app offline reload/editing. Both light and dark axe scans have zero violations; the prior dark serious contrast and moderate landmark failures are absent. The offline test waits for service-worker control, sets the browser offline, reloads, and edits a local draft successfully. A separate production-preview update exercise kept an installed page open, rebuilt the worker, called `registration.update()`, observed `A fresh field console is ready.`, activated Reload, and confirmed service-worker control after reload. The versioned `skipWaiting`/`clientsClaim` update path passes.
+
+Current production bundle from the repair build:
+
+- JavaScript: 25,410 bytes raw / 8.97 kB gzip (under 200 kB).
+- CSS: 21,740 bytes raw / 5.46 kB gzip (under 50 kB).
+- Service-worker precache: 18 files.
+
+Privacy checks remain local-first by design: IndexedDB is the only application store; reference URLs are text only and never fetched; there are no accounts, analytics, cookies, third-party scripts, remote fonts, or runtime APIs. `/privacy/`, `/terms/`, and the offline shell remain precached.
+
+## Deployment and follow-up
+
+Push `main` to trigger the factory’s static deployment for `bird-id-evidence-card.sociobot.in`; verify the deployed response identity against this final commit/build and repeat the live 390 px offline reload. No repository deployment configuration or infrastructure files are present, so immutable asset headers and manifest MIME remain deployment-platform policy rather than app-code settings. The app manifest itself is valid and remains part of `dist/`.
+
+No known product gaps remain from verifier report `f18b6e83572b1d206c773d351306350d95ba23c7`.
