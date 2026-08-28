@@ -1,6 +1,6 @@
 # Bird ID Evidence Card — repair handoff
 
-## Status: ready for static deployment
+## Status: deployed
 
 Repair implementation commits: `4806dc17f8b96814a1c4100ad78d76d52d548ae9` and `9be79aeee4bc26e5a5014aef7f9f43c3e929857b`.
 
@@ -19,6 +19,7 @@ Repair implementation commits: `4806dc17f8b96814a1c4100ad78d76d52d548ae9` and `9
 - Browser accessibility suite uses axe in light and dark modes and passed with no serious or critical violations. It also checks keyboard skip navigation, mobile first-screen visibility at 390 × 844, route focus, legal chrome, offline demo reload, and metadata.
 - `scripts/verify-url.sh http://127.0.0.1:4173/` passed (title, language, main, and image alt text). Browser screenshots at 390 px were inspected for the landing and demo layouts.
 - Build size: initial JavaScript gzip 9.90 kB; CSS gzip 5.67 kB. Both are under the static-product budgets.
+- Static deployment completed through `/opt/fleet/lib/deploy-static.sh bird-id-evidence-card /work/repo/dist` (Azure deployment `fdc7c5f9-c7e9-4014-9cc8-5475955e5f1d`). Live verification at `https://bird-id-evidence-card.sociobot.in` returned HTTP 200, the new route title, one h1, `lang="en"`, a main landmark, no missing image alt text, and no browser console errors. `/not-a-real-route` returned HTTP 404.
 
 ## Run and deploy
 
@@ -28,8 +29,8 @@ npm test
 npm run build
 ```
 
-Deploy the generated `dist/` directory as the configured static artifact. `public/staticwebapp.config.json` supplies the static host routing and security headers.
+`dist/` was deployed as the configured static artifact. `public/staticwebapp.config.json` supplies the static host routing and security headers.
 
 ## Known gaps
 
-None known. The external Lighthouse CLI could not complete in this container because its Chromium tab crashed; the committed browser/axe suite and build-size checks completed successfully.
+No known product gaps or unresolved review blockers. The external Lighthouse CLI could not complete in this container because its Chromium tab crashed; the committed browser/axe suite and build-size checks completed successfully.
