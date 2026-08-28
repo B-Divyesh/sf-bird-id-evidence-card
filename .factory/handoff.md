@@ -31,9 +31,9 @@ Current production bundle from the repair build:
 
 - JavaScript: 25,410 bytes raw / 8.97 kB gzip (under 200 kB).
 - CSS: 21,740 bytes raw / 5.46 kB gzip (under 50 kB).
-- Service-worker precache: 18 files.
+- Service-worker precache: 20 files.
 
-Privacy checks remain local-first by design: IndexedDB is the only application store; reference URLs are text only and never fetched; there are no accounts, analytics, cookies, third-party scripts, remote fonts, or runtime APIs. `/privacy/`, `/terms/`, and the offline shell remain precached. `public/staticwebapp.config.json` also sets immutable caching for hashed assets, `no-cache` for the service worker, and the correct manifest content type for the static host.
+Privacy checks remain local-first by design: IndexedDB is the only application store; reference URLs are text only and never fetched; there are no accounts, analytics, cookies, third-party scripts, remote fonts, or runtime APIs. `/privacy/`, `/terms/`, and the offline shell remain precached. `public/staticwebapp.config.json` also sets immutable caching for hashed assets and `no-cache` for the service worker. The linked `manifest.json` is served as JSON by the static host; the retained `manifest.webmanifest` is available for tooling that expects that filename.
 
 ## Deployment and follow-up
 

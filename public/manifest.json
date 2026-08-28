@@ -1,0 +1,18 @@
+{
+  "name": "Bird ID Evidence Card",
+  "short_name": "Bird Evidence",
+  "description": "Compare observed bird evidence with tentative suggestions before you log.",
+  "id": "/",
+  "start_url": "/?source=pwa&v=1",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f1e9d5",
+  "theme_color": "#174d3c",
+  "categories": ["utilities", "education"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
