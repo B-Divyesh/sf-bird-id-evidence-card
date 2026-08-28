@@ -1,26 +1,35 @@
-# Bird ID Evidence Card — review 1 handoff
+# Bird ID Evidence Card — repair handoff
 
-## Status: FAIL
+## Status: ready for static deployment
 
-Completed the requested adversarial first-read review without modifying product code. The full review is in [`.factory/review-1.md`](review-1.md).
+Repair implementation commits: `4806dc17f8b96814a1c4100ad78d76d52d548ae9` and `9be79aeee4bc26e5a5014aef7f9f43c3e929857b`.
 
-## What was verified
+## What changed
 
-- Fresh live Chromium contexts at 390 × 844 and 1280 × 900, including the pre-scroll phone screen.
-- `/demo`, `/?demo=1`, Privacy, Terms, a non-existent route, root links, title/metadata, and normal offline/same-origin behavior.
-- A clean local clone at `/tmp/bird-review-Z7Pe7i`: `npm ci` and `npm test` passed; its final Playwright status was `passed`.
+- Rewrote the first screen with the reviewed job statement, audience, one-click sample action, adjacent outcome, and three plain facts.
+- Added `/demo` and `?demo=1`. The shipped Deerness coast sample has observed notes, two candidates, a reference link, and an unresolved decision. `demo:bird-id-evidence-card` is separate from the real `bird-id-evidence-card` IndexedDB database. The persistent demo banner can reset the sample or clear it before starting for real.
+- Added route-aware `/records` and `/guide`, route titles, back/forward focus and live announcements, styled `404.html`, and static deployment route rewrites plus a 404 response override.
+- Added canonical, Open Graph, Twitter, SVG favicon, Apple touch icon, sitemap routes, consistent legal chrome, footer factory attribution/build id, and a mobile demo preview order.
+- Added the claims registry, demo documentation, copy audit, catalog description, URL structure check, and observable tagged claim tests.
 
-## Release blockers
+## Verification evidence
 
-1. The first screen has no plain job statement, named audience, or primary first action.
-2. No isolated sample-data demo exists; `/demo` and `?demo=1` open the ordinary empty workspace.
-3. `.factory/claims.json` and `@claim:` sandbox tests are absent while public claims remain on the landing page and README.
-4. Meaningful product destinations are fragment-only and a nonexistent URL returns the normal app with HTTP 200 rather than a designed 404.
+- Clean clone at `/tmp/bird-id-evidence-card-clean`: `npm ci && npm test` passed: 6 unit tests; production build; service-worker shell check; 21 Playwright passes on desktop/mobile Chromium with one intentional desktop skip.
+- Every command in `.factory/claims.json` was run in that clean clone. All seven tagged claims passed in desktop and mobile Chromium: offline reload/edit, same-origin demo traffic, no-gate sample use, demo IndexedDB isolation/reset, CSV/Markdown/JSON downloads, coordinate omission, and no external reference fetch.
+- Browser accessibility suite uses axe in light and dark modes and passed with no serious or critical violations. It also checks keyboard skip navigation, mobile first-screen visibility at 390 × 844, route focus, legal chrome, offline demo reload, and metadata.
+- `scripts/verify-url.sh http://127.0.0.1:4173/` passed (title, language, main, and image alt text). Browser screenshots at 390 px were inspected for the landing and demo layouts.
+- Build size: initial JavaScript gzip 9.90 kB; CSS gzip 5.67 kB. Both are under the static-product budgets.
 
-## Left intentionally unchanged
+## Run and deploy
 
-Only this handoff and `.factory/review-1.md` were added. No product, test, deployment, or configuration files were changed.
+```sh
+npm ci
+npm test
+npm run build
+```
 
-## Next verification
+Deploy the generated `dist/` directory as the configured static artifact. `public/staticwebapp.config.json` supplies the static host routing and security headers.
 
-After the blockers are repaired, run the demo entry point from a fresh browser context, execute every command in the new `.factory/claims.json`, confirm demo storage does not affect real storage, then rerun `npm test` and the live first-read review.
+## Known gaps
+
+None known. The external Lighthouse CLI could not complete in this container because its Chromium tab crashed; the committed browser/axe suite and build-size checks completed successfully.
