@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createBlankCard, getReadiness, isComplete, normalizeCard } from '../../src/model';
+import { createBlankCard, getReadiness, isComplete, nextCardNumber, normalizeCard } from '../../src/model';
 import { toCsv, toMarkdown } from '../../src/exports';
 
 describe('evidence card model', () => {
@@ -47,5 +47,13 @@ describe('evidence card model', () => {
     card.candidates[0]!.confidence = 300;
     const normalized = normalizeCard(card);
     expect(normalized?.candidates[0]?.confidence).toBe(100);
+  });
+
+  it('allocates beyond a retained daily high-water mark after deletion', () => {
+    const first = createBlankCard();
+    first.observedAt = '2026-08-28T09:00';
+    first.cardNumber = 'BID-20260828-001';
+    const second = { ...first, id: 'second', cardNumber: 'BID-20260828-002' };
+    expect(nextCardNumber(first, [second], 2)).toBe('BID-20260828-003');
   });
 });

@@ -1,7 +1,7 @@
-import type { EvidenceCard } from './model';
+import { cardDay, cardSequence, nextCardNumber, type EvidenceCard } from './model';
 
 const DB_NAME = 'bird-id-evidence-card';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const CARD_STORE = 'cards';
 const META_STORE = 'meta';
 
@@ -59,6 +59,30 @@ export const saveCard = async (card: EvidenceCard): Promise<void> => {
   await transactionDone(transaction);
 };
 
+const sequenceKey = (card: Pick<EvidenceCard, 'observedAt' | 'createdAt'>): string => `card-sequence:${cardDay(card)}`;
+
+/**
+ * Gives a new card its number inside the same IndexedDB transaction that writes
+ * it. A per-day high-water mark is deliberately retained after deletion.
+ */
+export const saveNewCard = async (card: EvidenceCard): Promise<EvidenceCard> => {
+  const database = await db();
+  const transaction = database.transaction([CARD_STORE, META_STORE], 'readwrite');
+  const cardStore = transaction.objectStore(CARD_STORE);
+  const metaStore = transaction.objectStore(META_STORE);
+  const sequenceRequest = metaStore.get(sequenceKey(card));
+  const cardsRequest = cardStore.getAll();
+  const [allocatedThrough, storedCards] = await Promise.all([
+    request<number | undefined>(sequenceRequest),
+    request<EvidenceCard[]>(cardsRequest)
+  ]);
+  const numbered = { ...card, cardNumber: nextCardNumber(card, storedCards, Number(allocatedThrough) || 0) };
+  metaStore.put(cardSequence(numbered), sequenceKey(numbered));
+  cardStore.put(numbered);
+  await transactionDone(transaction);
+  return numbered;
+};
+
 export const getCards = async (): Promise<EvidenceCard[]> => {
   const database = await db();
   const result = await request<EvidenceCard[]>(database.transaction(CARD_STORE).objectStore(CARD_STORE).getAll());
@@ -74,8 +98,19 @@ export const deleteCard = async (id: string): Promise<void> => {
 
 export const importCards = async (cards: EvidenceCard[]): Promise<void> => {
   const database = await db();
-  const transaction = database.transaction(CARD_STORE, 'readwrite');
+  const transaction = database.transaction([CARD_STORE, META_STORE], 'readwrite');
   const store = transaction.objectStore(CARD_STORE);
+  const metaStore = transaction.objectStore(META_STORE);
   for (const card of cards) store.put(card);
+  const importedHighWaterMarks = new Map<string, number>();
+  for (const card of cards) {
+    const key = sequenceKey(card);
+    importedHighWaterMarks.set(key, Math.max(importedHighWaterMarks.get(key) ?? 0, cardSequence(card)));
+  }
+  const existing = await Promise.all([...importedHighWaterMarks.keys()].map(async (key) => [key, await request<number | undefined>(metaStore.get(key))] as const));
+  for (const [key, importedSequence] of importedHighWaterMarks) {
+    const previousSequence = Number(existing.find(([existingKey]) => existingKey === key)?.[1]) || 0;
+    if (importedSequence > previousSequence) metaStore.put(importedSequence, key);
+  }
   await transactionDone(transaction);
 };

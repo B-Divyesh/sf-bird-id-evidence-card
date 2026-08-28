@@ -2,7 +2,6 @@ import './styles.css';
 import {
   blankCandidate,
   blankReference,
-  cardNumberFor,
   cardTitle,
   createBlankCard,
   getReadiness,
@@ -17,7 +16,7 @@ import {
   type ViewQuality
 } from './model';
 import { csvHeader, suggestedFilename, summaryText, toCsv, toCsvRow, toMarkdown } from './exports';
-import { clearDraft, deleteCard, getCards, importCards, loadDraft, saveCard, saveDraft } from './storage';
+import { clearDraft, deleteCard, getCards, importCards, loadDraft, saveCard, saveDraft, saveNewCard } from './storage';
 
 const byId = <T extends HTMLElement>(id: string): T => {
   const element = document.getElementById(id);
@@ -370,9 +369,9 @@ form.addEventListener('submit', async (event) => {
     return;
   }
   try {
-    if (!current.cardNumber) current.cardNumber = cardNumberFor(current, cards.length + 1);
     current.updatedAt = new Date().toISOString();
-    await saveCard(current);
+    if (current.cardNumber) await saveCard(current);
+    else current = await saveNewCard(current);
     await saveDraft(current);
     cards = await getCards();
     byId('record-count').textContent = String(cards.length);
@@ -461,8 +460,8 @@ byId<HTMLInputElement>('import-file').addEventListener('change', async (event) =
     await importCards(normalized);
     await renderRecords();
     showToast(`Imported ${normalized.length} card${normalized.length === 1 ? '' : 's'}; matching IDs were updated.`);
-  } catch (error) {
-    console.error(error); showToast('That file is not a valid Bird ID Evidence Card backup. No data was changed.');
+  } catch {
+    showToast('That file is not a valid Bird ID Evidence Card backup. No data was changed.');
   }
 });
 

@@ -114,10 +114,27 @@ export const leadingCandidate = (card: EvidenceCard): Candidate | undefined =>
 export const cardTitle = (card: EvidenceCard): string =>
   card.finalIdentity.trim() || leadingCandidate(card)?.species.trim() || 'Unresolved bird';
 
-export const cardNumberFor = (card: EvidenceCard, sequence: number): string => {
-  const day = (card.observedAt || card.createdAt).slice(0, 10).replaceAll('-', '');
-  return `BID-${day}-${String(sequence).padStart(3, '0')}`;
+export const cardNumberFor = (card: Pick<EvidenceCard, 'observedAt' | 'createdAt'>, sequence: number): string => {
+  return `BID-${cardDay(card)}-${String(sequence).padStart(3, '0')}`;
 };
+
+export const cardDay = (card: Pick<EvidenceCard, 'observedAt' | 'createdAt'>): string =>
+  (card.observedAt || card.createdAt).slice(0, 10).replaceAll('-', '');
+
+export const cardSequence = (card: Pick<EvidenceCard, 'cardNumber' | 'observedAt' | 'createdAt'>): number => {
+  const match = new RegExp(`^BID-${cardDay(card)}-(\\d+)$`).exec(card.cardNumber);
+  return match ? Number(match[1]) : 0;
+};
+
+/**
+ * Allocates beyond both archived cards and the persisted per-day high-water mark.
+ * The latter means a deleted card number is never issued again.
+ */
+export const nextCardNumber = (
+  card: Pick<EvidenceCard, 'cardNumber' | 'observedAt' | 'createdAt'>,
+  cards: Array<Pick<EvidenceCard, 'cardNumber' | 'observedAt' | 'createdAt'>>,
+  allocatedThrough = 0
+): string => cardNumberFor(card, Math.max(allocatedThrough, ...cards.map(cardSequence)) + 1);
 
 const text = (value: unknown, max = 2_000): string => typeof value === 'string' ? value.slice(0, max) : '';
 const oneOf = <T extends string>(value: unknown, allowed: readonly T[], fallback: T): T => allowed.includes(value as T) ? value as T : fallback;

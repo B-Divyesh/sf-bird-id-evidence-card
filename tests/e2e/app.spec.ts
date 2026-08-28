@@ -41,6 +41,66 @@ test('passes a serious/critical accessibility scan and keyboard nav', async ({ p
   expect(consoleErrors).toEqual([]);
 });
 
+test('has no axe violations in the dark field treatment', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/');
+  const results = await new AxeBuilder({ page: page as any }).analyze();
+  expect(results.violations, results.violations.map((item) => `${item.id}: ${item.help}`).join('\n')).toEqual([]);
+});
+
+test('never reissues a same-day card number after deletion', async ({ page }) => {
+  test.setTimeout(60_000);
+  const observedAt = '2026-08-28T10:00';
+  const saveMinimalCard = async (locality: string): Promise<void> => {
+    await page.getByLabel('Date & time *').fill(observedAt);
+    await page.getByLabel('Locality *').fill(locality);
+    await page.getByRole('button', { name: 'Save evidence card' }).click();
+    await expect(page.getByText(/Filed locally/)).toBeVisible();
+  };
+  const startNewCard = async (): Promise<void> => {
+    await page.getByRole('button', { name: 'Start a new card' }).click();
+    await page.getByRole('button', { name: 'Start new card' }).click();
+  };
+
+  await page.goto('/');
+  await saveMinimalCard('First headland');
+  await startNewCard();
+  await saveMinimalCard('Second headland');
+  await page.getByRole('button', { name: /Saved cards/ }).click();
+  const firstRecord = page.locator('.record-item').filter({ hasText: 'BID-20260828-001' });
+  await firstRecord.getByRole('button', { name: 'Delete' }).click();
+  await page.getByRole('button', { name: 'Delete card' }).click();
+  await expect(firstRecord).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Workbench' }).click();
+  await startNewCard();
+  await saveMinimalCard('Third headland');
+  await page.getByRole('button', { name: /Saved cards/ }).click();
+  await expect(page.locator('.record-item').filter({ hasText: 'BID-20260828-002' })).toHaveCount(1);
+  await expect(page.locator('.record-item').filter({ hasText: 'BID-20260828-003' })).toHaveCount(1);
+});
+
+test('keeps mobile navigation and legal links at 44px', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile-chromium', 'Measured at the 390px mobile breakpoint.');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  const controls = [page.locator('.wordmark'), ...await page.locator('.site-footer a').all()];
+  for (const control of controls) {
+    const box = await control.boundingBox();
+    expect(box?.height).toBeGreaterThanOrEqual(44);
+    expect(box?.width).toBeGreaterThanOrEqual(44);
+  }
+});
+
+test('rejects malformed backup without emitting an expected console error', async ({ page }) => {
+  const consoleErrors: string[] = [];
+  page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
+  await page.goto('/');
+  await page.locator('#import-file').setInputFiles('tests/fixtures/invalid-backup.json');
+  await expect(page.getByText(/not a valid Bird ID Evidence Card backup/i)).toBeVisible();
+  expect(consoleErrors).toEqual([]);
+});
+
 test('loads the installed workbench offline', async ({ page, context }) => {
   await page.goto('/');
   await page.evaluate(async () => { await navigator.serviceWorker.ready; });
