@@ -1,6 +1,6 @@
-# Copy audit — polish 4
+# Copy audit — polish 5
 
-Checked 2026-08-28. Hyphenated terms count as one word. No public sentence exceeds 22 words. No banned marketing word appears. File-format terms are explained where a visitor chooses an export. The source-backed audit test also covers dialog, toast, error, offline, and import/export states.
+Checked 2026-08-28. Hyphenated terms count as one word. No public sentence exceeds 22 words. No banned marketing word appears. File-format terms are explained where a visitor chooses an export. The source-backed audit test also covers model labels, limits, dialog, toast, error, offline, and import/export states.
 
 ## Landing, workbench, demo, and guide
 
@@ -39,6 +39,11 @@ Checked 2026-08-28. Hyphenated terms count as one word. No public sentence excee
 | Markdown is a shareable text card. | 6 | Explains format |
 | A backup saves all cards for moving to another browser. | 10 | `exports` |
 | Save your current draft when you want to find it here. | 11 | Instruction |
+| Record shape, movement, habitat, and sound before checking the suggestion. | 10 | Instruction |
+| Add alternatives, then note what fits and what contradicts each one. | 11 | Instruction |
+| Keep the status unresolved until your own evidence supports a change. | 10 | Instruction |
+| It records your notes. | 4 | `record-evidence-card` |
+| It does not identify birds or download recordings. | 8 | `no-automatic-identification`, `no-audio-fetch` |
 | Record shape, movement, habitat, and sound before opening another guide. | 10 | Pass |
 | Add at least two candidates when possible. | 7 | Pass |
 | Note one fit and one contradiction for each. | 8 | Pass |
@@ -63,6 +68,8 @@ Checked 2026-08-28. Hyphenated terms count as one word. No public sentence excee
 | Save failed — export this card | 6 | Clear recovery action |
 | This browser could not save your changes. | 7 | Clear error |
 | Your current work remains on screen; export it before leaving. | 10 | Clear recovery action |
+| A card can hold up to 12 candidates. | 8 | `card-entry-limits` |
+| A card can hold up to 20 reference links. | 9 | `card-entry-limits` |
 | Complete evidence card saved on this device. | 7 | `record-evidence-card` |
 | Draft card saved. | 3 | `record-evidence-card` |
 | The readiness list shows what is still missing. | 8 | Pass |
@@ -141,11 +148,17 @@ Checked 2026-08-28. Hyphenated terms count as one word. No public sentence excee
 | Open the local address shown after the development server starts. | 9 | Developer instruction |
 | Open `/demo` to use sample data that stays separate from your cards. | 12 | `demo-isolation` |
 | Automated product checks and their commands are listed in `.factory/claims.json`. | 10 | Developer documentation |
+| Run `npm run build`, then publish `dist/` as the static site root. | 12 | Deployment instruction |
+| The build includes route documents, the service worker, `staticwebapp.config.json`, and the designed 404 page. | 14 | Verified build contents |
+| Factory infrastructure deploys that output. | 5 | Deployment instruction |
+| This repository does not change DNS, hosting, or billing. | 9 | Deployment boundary |
 | Use evidence cards as notes, not verdicts. | 7 | Pass |
 
 ## Headings, actions, and terminology
 
-Route headings stand alone: `Record bird evidence before you log.`, `Your current evidence card`, `Saved evidence cards`, and `Check an uncertain bird in four steps`.
+Route and landing headings stand alone: `Record bird evidence before you log.`, `Your current evidence card`, `How it works`, `What this tool does not do`, `Your data, on your device`, `Saved evidence cards`, and `Check an uncertain bird in four steps`.
+
+Model-derived readiness labels use the same input terms: `Visual notes` and `Call notes`. The retired `Visual account` and `Audio account` labels do not appear in public source.
 
 Actions name their result: `Try it with sample data`, `Save evidence card`, `Export Markdown`, `Export CSV`, `Export backup`, `Import backup`, `Start a new card`, `Reset demo`, `Start a blank card`, `Open card`, `Delete`, and `Keep card`.
 
@@ -155,5 +168,7 @@ Actions name their result: `Try it with sample data`, `Save evidence card`, `Exp
 | Try-out content | sample data |
 | Candidate from an app or person | suggestion |
 | Browser persistence | this browser |
+| Observed appearance | visual notes |
+| Observed sound | call notes |
 | Coarse location | locality-only |
 | Move all saved cards | backup |

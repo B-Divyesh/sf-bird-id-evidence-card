@@ -98,8 +98,8 @@ export const createBlankCard = (): EvidenceCard => {
 
 export const getReadiness = (card: EvidenceCard): ReadinessItem[] => [
   { key: 'context', label: 'Date & locality', complete: Boolean(card.observedAt && card.locationName.trim()) },
-  { key: 'look', label: 'Visual account', complete: card.viewQuality === 'not-seen' || Boolean(card.visualTraits.trim()) },
-  { key: 'listen', label: 'Audio account', complete: card.noCallHeard || Boolean(card.callNotes.trim()) },
+  { key: 'look', label: 'Visual notes', complete: card.viewQuality === 'not-seen' || Boolean(card.visualTraits.trim()) },
+  { key: 'listen', label: 'Call notes', complete: card.noCallHeard || Boolean(card.callNotes.trim()) },
   { key: 'candidates', label: 'Candidate named', complete: card.candidates.some((item) => Boolean(item.species.trim())) },
   { key: 'decision', label: 'Reasoning noted', complete: Boolean(card.reviewNotes.trim()) }
 ];

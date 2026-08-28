@@ -239,6 +239,27 @@ test('@claim:no-tracking-or-remote-assets loads no tracking or remote resources'
   expect(await page.evaluate(() => ({ cookies: document.cookie, localKeys: Object.keys(localStorage) }))).toEqual({ cookies: '', localKeys: [] });
 });
 
+test('@claim:card-entry-limits persists exactly 12 candidates and 20 reference links', async ({ page }) => {
+  await page.goto('/demo');
+  const addCandidate = page.getByRole('button', { name: 'Add candidate' });
+  for (let index = 2; index < 12; index += 1) await addCandidate.evaluate((button: HTMLButtonElement) => button.click());
+  await expect(page.locator('[data-candidate-id]')).toHaveCount(12);
+  await addCandidate.evaluate((button: HTMLButtonElement) => button.click());
+  await expect(page.getByText('A card can hold up to 12 candidates.')).toBeVisible();
+
+  const addReference = page.getByRole('button', { name: 'Add reference' });
+  for (let index = 1; index < 20; index += 1) await addReference.evaluate((button: HTMLButtonElement) => button.click());
+  await expect(page.locator('[data-reference-id]')).toHaveCount(20);
+  await addReference.evaluate((button: HTMLButtonElement) => button.click());
+  await expect(page.getByText('A card can hold up to 20 reference links.')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Save evidence card' }).click();
+  await expect(page.getByText(/Saved on this device/i).first()).toBeVisible();
+  await page.reload();
+  await expect(page.locator('[data-candidate-id]')).toHaveCount(12);
+  await expect(page.locator('[data-reference-id]')).toHaveCount(20);
+});
+
 test('first phone screen states the job, audience, action, and outcome', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium', 'Phone viewport check.');
   await page.setViewportSize({ width: 390, height: 844 });
@@ -271,6 +292,25 @@ test('routes use meaningful titles and navigation restores focus', async ({ page
   await page.goForward();
   await expect(page).toHaveURL(/\/records$/);
   await expect(page.getByRole('heading', { level: 1, name: /saved evidence cards/i })).toBeFocused();
+});
+
+test('landing explains the three-step method, limits, and privacy after the live product', async ({ page }) => {
+  await page.goto('/');
+  const explainer = page.locator('#landing-explainer');
+  await expect(explainer.getByRole('heading', { level: 2, name: 'How it works' })).toBeVisible();
+  await expect(explainer.locator('.explain-steps > li')).toHaveCount(3);
+  await expect(explainer.getByRole('heading', { level: 2, name: 'What this tool does not do' })).toBeVisible();
+  await expect(explainer.getByRole('heading', { level: 2, name: 'Your data, on your device' })).toBeVisible();
+  expect(await page.evaluate(() => {
+    const workbench = document.querySelector('#view-workbench');
+    const explanation = document.querySelector('#landing-explainer');
+    const footer = document.querySelector('.site-footer');
+    if (!workbench || !explanation || !footer) return false;
+    return Boolean(workbench.compareDocumentPosition(explanation) & Node.DOCUMENT_POSITION_FOLLOWING)
+      && Boolean(explanation.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING);
+  })).toBeTruthy();
+  await page.goto('/demo');
+  await expect(page.locator('#landing-explainer')).toBeHidden();
 });
 
 test('route responses and rendered pages contain one route-specific h1', async ({ page, request }) => {
@@ -356,13 +396,17 @@ test('all public pages share navigation, footer links, build id, and complete me
     await expect(primary).toBeVisible();
     expect(await primary.getByRole('link').allTextContents()).toEqual(expectedPrimary);
     expect(await page.getByRole('navigation', { name: 'Legal and project' }).getByRole('link').allTextContents()).toEqual(expectedFooter);
-    await expect(page.getByText(/Built by Param Factory · v1\.0\.4/)).toBeVisible();
+    await expect(page.getByText(/Built by Param Factory · v1\.0\.5/)).toBeVisible();
   }
 });
 
 test('state messages use evidence-card terms and action-specific dialog headings', async ({ page }) => {
   await page.goto('/demo');
   await expect(page.locator('#save-status')).toHaveText(/Draft restored from this device|Ready on this device/);
+  await expect(page.locator('#readiness-list')).toContainText('Visual notes');
+  await expect(page.locator('#readiness-list')).toContainText('Call notes');
+  await expect(page.locator('#readiness-list')).not.toContainText('Visual account');
+  await expect(page.locator('#readiness-list')).not.toContainText('Audio account');
   await page.getByRole('button', { name: 'Start a new card' }).click();
   const newDialog = page.getByRole('dialog');
   await expect(newDialog.getByRole('heading', { name: 'Start a new evidence card?' })).toBeVisible();

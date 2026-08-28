@@ -90,6 +90,22 @@ try {
   await page.screenshot({ path: path.join(evidenceDir, 'home-mobile.png'), fullPage: false });
   pass('First phone screen', 'job, audience, sample action, and next outcome are visible at 390×844');
 
+  const landingExplainer = page.locator('#landing-explainer');
+  await landingExplainer.getByRole('heading', { level: 2, name: 'How it works' }).waitFor();
+  assert.equal(await landingExplainer.locator('.explain-steps > li').count(), 3);
+  await landingExplainer.getByRole('heading', { level: 2, name: 'What this tool does not do' }).waitFor();
+  await landingExplainer.getByRole('heading', { level: 2, name: 'Your data, on your device' }).waitFor();
+  assert.equal(await page.evaluate(() => {
+    const workbench = document.querySelector('#view-workbench');
+    const explanation = document.querySelector('#landing-explainer');
+    const footer = document.querySelector('.site-footer');
+    if (!workbench || !explanation || !footer) return false;
+    return Boolean(workbench.compareDocumentPosition(explanation) & Node.DOCUMENT_POSITION_FOLLOWING)
+      && Boolean(explanation.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING);
+  }), true);
+  await landingExplainer.screenshot({ path: path.join(evidenceDir, 'landing-explainer-mobile.png') });
+  pass('Landing explanation and limits', 'three-step method, product limits, and device privacy follow the live workbench');
+
   await page.getByLabel('Date & time *').fill('2026-08-28T10:12');
   await page.getByLabel('Locality *').fill('LIVE REAL STORAGE SENTINEL');
   await page.getByLabel('Visual traits').fill('Live real-data isolation sentinel');
@@ -103,7 +119,26 @@ try {
   await page.getByText(/Northern Fulmar/i).first().waitFor();
   assert.equal(await page.locator('h1').count(), 1);
   assert.equal(await page.title(), 'Demo — Bird ID Evidence Card');
+  assert.match(await page.locator('#readiness-list').innerText(), /Visual notes/);
+  assert.match(await page.locator('#readiness-list').innerText(), /Call notes/);
+  assert.doesNotMatch(await page.locator('#readiness-list').innerText(), /Visual account|Audio account/);
   await page.screenshot({ path: path.join(evidenceDir, 'demo-mobile.png'), fullPage: false });
+
+  const addCandidate = page.getByRole('button', { name: 'Add candidate' });
+  for (let index = 2; index < 12; index += 1) await addCandidate.evaluate((button) => button.click());
+  assert.equal(await page.locator('[data-candidate-id]').count(), 12);
+  await addCandidate.evaluate((button) => button.click());
+  await page.getByText('A card can hold up to 12 candidates.').waitFor();
+  const addReference = page.getByRole('button', { name: 'Add reference' });
+  for (let index = 1; index < 20; index += 1) await addReference.evaluate((button) => button.click());
+  assert.equal(await page.locator('[data-reference-id]').count(), 20);
+  await addReference.evaluate((button) => button.click());
+  await page.getByText('A card can hold up to 20 reference links.').waitFor();
+  await page.getByRole('button', { name: 'Save evidence card' }).click();
+  await page.reload();
+  assert.equal(await page.locator('[data-candidate-id]').count(), 12);
+  assert.equal(await page.locator('[data-reference-id]').count(), 20);
+  pass('Entry limits and readiness terms', '12 candidates and 20 reference links persisted; readiness uses visual notes and call notes');
   await page.getByLabel('Locality *').fill('Changed only inside live demo');
   await page.getByRole('button', { name: 'Save evidence card' }).click();
   await page.getByRole('button', { name: 'Reset demo' }).click();
@@ -127,7 +162,7 @@ try {
     assert.equal(await page.locator('meta[name="twitter:title"]').count(), 1);
     assert.deepEqual(await page.getByRole('navigation', { name: 'Primary' }).getByRole('link').allTextContents(), primaryLabels);
     assert.deepEqual(await page.getByRole('navigation', { name: 'Legal and project' }).getByRole('link').allTextContents(), footerLabels);
-    await page.getByText(/Built by Param Factory · v1\.0\.4/).waitFor();
+    await page.getByText(/Built by Param Factory · v1\.0\.5/).waitFor();
     const accessibility = await new AxeBuilder({ page }).analyze();
     assert.deepEqual(accessibility.violations, [], `${route} must have zero axe violations`);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${route} must not overflow horizontally`);

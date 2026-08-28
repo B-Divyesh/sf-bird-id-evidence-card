@@ -37,6 +37,12 @@ npm run build
 
 Automated product checks and their commands are listed in [`.factory/claims.json`](.factory/claims.json).
 
+## Deploy
+
+Run `npm run build`, then publish `dist/` as the static site root. The build includes route documents, the service worker, `staticwebapp.config.json`, and the designed 404 page.
+
+Factory infrastructure deploys that output. This repository does not change DNS, hosting, or billing.
+
 ## Privacy and limits
 
 Use evidence cards as notes, not verdicts. See [Privacy](https://bird-id-evidence-card.sociobot.in/privacy/) and [Terms](https://bird-id-evidence-card.sociobot.in/terms/).
