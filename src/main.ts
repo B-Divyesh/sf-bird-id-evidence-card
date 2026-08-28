@@ -86,7 +86,7 @@ const setMetadata = (view: ViewName): void => {
   write('meta[name="twitter:description"]', details.description);
 };
 
-const setHeadingLevel = (id: string, level: 1 | 2): HTMLElement => {
+const setHeadingLevel = (id: string, level: 1 | 2 | 3): HTMLElement => {
   const heading = byId(id);
   if (heading.tagName === `H${level}`) return heading;
   const replacement = document.createElement(`h${level}`);
