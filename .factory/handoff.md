@@ -1,36 +1,27 @@
-# Bird ID Evidence Card — repair handoff
+# Review 2 handoff
 
-## Status: deployed
+## What was done
 
-Repair implementation commits: `4806dc17f8b96814a1c4100ad78d76d52d548ae9` and `9be79aeee4bc26e5a5014aef7f9f43c3e929857b`.
+- Performed the adversarial first-read review against the live site in fresh 390px and desktop Chromium contexts.
+- Audited every landing/README sentence, headings, actions, terminology, claims, demo isolation, offline behavior, routing, metadata, links, accessibility, touch targets, 404, and visual identity.
+- Wrote the full evidence and FAIL verdict to `.factory/review-2.md`.
+- Changed no product code.
 
-## What changed
+## Verification
 
-- Rewrote the first screen with the reviewed job statement, audience, one-click sample action, adjacent outcome, and three plain facts.
-- Added `/demo` and `?demo=1`. The shipped Deerness coast sample has observed notes, two candidates, a reference link, and an unresolved decision. `demo:bird-id-evidence-card` is separate from the real `bird-id-evidence-card` IndexedDB database. The persistent demo banner can reset the sample or clear it before starting for real.
-- Added route-aware `/records` and `/guide`, route titles, back/forward focus and live announcements, styled `404.html`, and static deployment route rewrites plus a 404 response override.
-- Added canonical, Open Graph, Twitter, SVG favicon, Apple touch icon, sitemap routes, consistent legal chrome, footer factory attribution/build id, and a mobile demo preview order.
-- Added the claims registry, demo documentation, copy audit, catalog description, URL structure check, and observable tagged claim tests.
+- Clean clone at commit `e9a4f330e4dc55457be6c3ae8a7cba0b51fff41b` with `npm ci`.
+- All seven exact `.factory/claims.json` commands failed from that clean clone because Playwright's preview server had no prebuilt `dist/` and timed out after 30 seconds.
+- After an explicit diagnostic `npm run build`, the combined claim run passed 14 mobile/desktop cases.
+- Final repository `npm test` passed: 6 unit tests, production build and shell check, and 21 Playwright tests with 1 intentional skip.
+- Live demo reset, real/demo IndexedDB isolation, service-worker offline reload/edit, and same-origin-only requests were independently exercised and passed.
+- Live link crawl, designed 404, console check, `scripts/verify-url.sh`, and axe scans were run. Axe found no serious/critical violations.
 
-## Verification evidence
+## Known gaps and next steps
 
-- Clean clone at `/tmp/bird-id-evidence-card-clean`: `npm ci && npm test` passed: 6 unit tests; production build; service-worker shell check; 21 Playwright passes on desktop/mobile Chromium with one intentional desktop skip.
-- Every command in `.factory/claims.json` was run in that clean clone. All seven tagged claims passed in desktop and mobile Chromium: offline reload/edit, same-origin demo traffic, no-gate sample use, demo IndexedDB isolation/reset, CSV/Markdown/JSON downloads, coordinate omission, and no external reference fetch.
-- Browser accessibility suite uses axe in light and dark modes and passed with no serious or critical violations. It also checks keyboard skip navigation, mobile first-screen visibility at 390 × 844, route focus, legal chrome, offline demo reload, and metadata.
-- `scripts/verify-url.sh http://127.0.0.1:4173/` passed (title, language, main, and image alt text). Browser screenshots at 390 px were inspected for the landing and demo layouts.
-- Build size: initial JavaScript gzip 9.90 kB; CSS gzip 5.67 kB. Both are under the static-product budgets.
-- Static deployment completed through `/opt/fleet/lib/deploy-static.sh bird-id-evidence-card /work/repo/dist` (Azure deployment `fdc7c5f9-c7e9-4014-9cc8-5475955e5f1d`). Live verification at `https://bird-id-evidence-card.sociobot.in` returned HTTP 200, the new route title, one h1, `lang="en"`, a main landmark, no missing image alt text, and no browser console errors. `/not-a-real-route` returned HTTP 404.
+1. Make every exact claim command build and start successfully from a clean clone.
+2. Render and focus a visible route-specific `<h1>`; do not leave destination content below the unchanged hero.
+3. Register or remove the unlisted claims catalogued in the review, and strengthen demo isolation with a seeded real-data sentinel.
+4. Correct route canonical/OG metadata, 1200 × 630 social art, 44px demo/legal targets, common header/footer structure, guide landmark nesting, and CSP.
+5. Replace the demo's invalid field-notes reference with a realistic licensed recording citation while preserving no-fetch behavior.
 
-## Run and deploy
-
-```sh
-npm ci
-npm test
-npm run build
-```
-
-`dist/` was deployed as the configured static artifact. `public/staticwebapp.config.json` supplies the static host routing and security headers.
-
-## Known gaps
-
-No known product gaps or unresolved review blockers. The external Lighthouse CLI could not complete in this container because its Chromium tab crashed; the committed browser/axe suite and build-size checks completed successfully.
+Run the review's exact checks from a new clone after repair; do not rely on a previously generated `dist/`.
