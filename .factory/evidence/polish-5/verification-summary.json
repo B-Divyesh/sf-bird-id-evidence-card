@@ -1,0 +1,15 @@
+{
+  "verified_at": "2026-08-28T16:19:00Z",
+  "application_commit": "61181b9f18c4cd196ac0e81da17a32d6086d1cfb",
+  "clean_clone": "/tmp/bird-polish5-clean.eznbKb",
+  "claims": { "passed": 16, "failed": 0 },
+  "unit_tests": { "passed": 11, "failed": 0 },
+  "browser_tests": { "passed": 49, "failed": 0, "skipped": 1, "skip_reason": "desktop copy of phone-only first-viewport assertion" },
+  "budgets_gzip_bytes": { "javascript": 10654, "css": 6033, "mobile_hero": 14501 },
+  "local_lighthouse": { "performance": 100, "accessibility": 100, "best_practices": 100, "seo": 100, "lcp_ms": 1508, "cls": 0, "tbt_ms": 39 },
+  "deployment_id": "d757e528-1fd2-4dfb-86d5-128222dcf85f",
+  "live_url": "https://bird-id-evidence-card.sociobot.in",
+  "live_lighthouse": { "performance": 100, "accessibility": 100, "best_practices": 100, "seo": 100, "lcp_ms": 1151, "cls": 0, "tbt_ms": 27 },
+  "live_audit": "pass",
+  "known_gaps": []
+}

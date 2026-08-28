@@ -1,0 +1,47 @@
+# Polish 5 — cumulative finding closure map
+
+Verified 2026-08-28 against application commit `61181b9f18c4cd196ac0e81da17a32d6086d1cfb` and the deployed site at <https://bird-id-evidence-card.sociobot.in>.
+
+The live audit record for all URL checks below is [live-audit.json](evidence/polish-5/live/live-audit.json). Local visual evidence includes the [first phone screen](evidence/polish-5/local/home-mobile.png), [sample phone screen](evidence/polish-5/local/demo-mobile.png), [mobile landing explanation](evidence/polish-5/local/landing-explainer-mobile.png), and [desktop landing explanation](evidence/polish-5/local/landing-explainer-desktop.png).
+
+| Finding | Change made | Evidence |
+| --- | --- | --- |
+| R1-B1 — unclear first screen | Kept the direct six-word job heading, birder/situation sentence, one-click sample action, adjacent outcome, and three facts in the phone viewport. | `first phone screen states the job, audience, action, and outcome`; [phone screenshot](evidence/polish-5/live/home-mobile.png); cold live `/` check. |
+| R1-B2 — no isolated sample | Kept `?demo=1` and `/demo`, realistic Deerness sample data, the persistent banner, reset/exit actions, cancelled autosaves, and the separate `demo:bird-id-evidence-card` database. | `@claim:demo-isolation`, `@claim:offline-demo`; [sample screenshot](evidence/polish-5/live/demo-mobile.png); live sentinel/reset/exit/offline checks. |
+| R1-B3 — missing or untested claims | Retained all prior claims and added `card-entry-limits`, bringing the registry to 16 uniquely tagged observable tests. | `maps every claim to exactly one tagged test`; all 16 exact commands passed in clean clone `/tmp/bird-polish5-clean.eznbKb`; live demo checks. |
+| R1-B4 — fake routes and 200 fallback | Kept static route documents, History API focus/announcement, and the designed host 404. | `route responses and rendered pages contain one route-specific h1`; `routes use meaningful titles and navigation restores focus`; live `/demo`, `/records`, `/guide`, and 404 checks. |
+| R1-H5 — incomplete metadata and chrome | Retained route-specific titles, descriptions, canonicals, social metadata/art, icons, shared shell, legal links, factory credit, and updated build `v1.0.5`. | `all public pages share navigation, footer links, build id, and complete metadata`; live seven-route metadata crawl. |
+| R1-M6 — jargon and inconsistent terms | Finished the terminology repair by replacing `Visual account` and `Audio account` with `Visual notes` and `Call notes`. | `state messages use evidence-card terms and action-specific dialog headings`; `audits dialog, toast, error, offline, and import or export state copy`; [sample screenshot](evidence/polish-5/live/demo-mobile.png); live readiness check. |
+| R1-M7 — unclear headings and controls | Kept standalone route, form, dialog, and landing-section headings plus result-naming actions. | route/focus and state-message tests; live keyboard/focus check; [landing screenshot](evidence/polish-5/live/landing-explainer-mobile.png). |
+| R2-B1 — claim commands fail in a clean clone | Preserved self-building claim commands and verified every registry command separately with no initial dependencies or build. | `ALL_CLAIMS_PASS=16` at `61181b9` in `/tmp/bird-polish5-clean.eznbKb`; subsequent clean `npm test` passed. |
+| R2-B2 — route destination remains off-screen | Kept route-specific visible h1 focus, scroll-to-top, and Back/Forward restoration. | `routes use meaningful titles and navigation restores focus`; live keyboard and route-focus check. |
+| R2-H3 — missing core or privacy claims | Retained recording, separation, non-identification, no-account, schema, delete, privacy, art, and export tests; added quantitative limit proof. | `.factory/claims.json`; 16/16 clean claim commands; live privacy and limit checks. |
+| R2-H4 — weak demo-isolation proof | Kept the real sentinel snapshot before sample editing, reset, and exit, followed by a byte-for-byte comparison. | `@claim:demo-isolation keeps a seeded real database unchanged`; live isolated-demo check. |
+| R2-M5 — generic deep-link metadata | Kept static route shells plus runtime title, description, canonical, Open Graph, and Twitter updates. | metadata browser test; `scripts/verify-build.mjs`; live raw-response and rendered-route checks. |
+| R2-M6 — undersized targets | Retained 44 px navigation, controls, footer, legal, 404, and offline actions; new landing content has no interactive target regression. | `all routes have no axe violations, horizontal overflow, or undersized chrome targets`; live mobile route audit. |
+| R2-M7 — inconsistent shell and landmarks | Kept the shared header/footer across app, legal, 404, and offline documents with one main landmark and valid outlines. | shared-page browser test; live seven-route axe/chrome crawl. |
+| R2-M8 — missing CSP | Kept the strict same-origin policy, `nosniff`, and referrer header without blocked resources. | `scripts/verify-build.mjs`; live header and zero-console-error check. |
+| R2-min9 — unrealistic sample reference | Kept the Northern Fulmar xeno-canto catalogue reference, licence, comparison note, and inert text-only behavior. | `@claim:no-audio-fetch`; [sample screenshot](evidence/polish-5/live/demo-mobile.png); live same-origin traffic check. |
+| F-3-1 — multiple h1 elements | Kept build-time and runtime heading normalization so every raw and rendered route has one route-specific h1. | `route responses and rendered pages contain one route-specific h1`; live raw route crawl and true 404 check. |
+| F-3-2 — public claims exceed proof | Closed the reopened quantitative gap with `card-entry-limits`; all other narrowed claims remain registered. | `@claim:card-entry-limits persists exactly 12 candidates and 20 reference links`; 16/16 clean commands; live persistence check. |
+| F-3-3 — inconsistent app/legal/404 shell | Kept one shared product shell and build identifier across app, legal, 404, and offline documents. | shared-page browser test; live chrome crawl. |
+| F-3-4 — unexplained export formats | Kept the plain CSV, Markdown, and backup explanations beside actions and in README. | `@claim:exports`; live sample route; `.factory/copy-audit.md`. |
+| F-4-1 — broken offline fallback | Kept the CSP-safe, styled offline page with shared shell, metadata, 44 px recovery actions, and service-worker fallback behavior. | `the installed app shell opens demo and legal routes offline`; live uncached offline fallback with zero axe/console errors. |
+| F-4-2 — jargon and vague state copy | Retained the round-4 state rewrites and added model-derived readiness labels to the source-backed terminology audit. | state-message browser test; copy-audit unit test; live readiness and offline checks. |
+| F-5-1 — unlisted 12/20 limits | Added `card-entry-limits`; the test reaches both exact limits, checks both messages, saves, reloads, and confirms 12 candidates plus 20 links persisted. | `@claim:card-entry-limits persists exactly 12 candidates and 20 reference links`; clean mobile/desktop passes; live demo persistence check. |
+| F-5-2 — `Visual account` / `Audio account` | Changed readiness labels to the established `Visual notes` and `Call notes`; source and browser tests reject the old terms. | state-message browser test and copy-audit unit test; live readiness check. |
+| F-5-3 — missing landing explanation and limits | Added a product-specific ruled three-step field method followed by explicit non-identification and on-device privacy sections after the live workbench. It stacks intentionally at 390 px. | `landing explains the three-step method, limits, and privacy after the live product`; [mobile](evidence/polish-5/live/landing-explainer-mobile.png) and [desktop](evidence/polish-5/local/landing-explainer-desktop.png) screenshots; cold live `/` check. |
+| F-5-4 — README omits deployment | Added `Deploy` with the exact build command, `dist/` static root, included route/SW/config/404 artifacts, and factory deployment boundary. | `documents the deployable static root and keeps the catalog line short and verb-first`; clean unit pass; README source check. |
+
+## Final verification
+
+- Clean clone `/tmp/bird-polish5-clean.eznbKb` at `61181b9f18c4cd196ac0e81da17a32d6086d1cfb`: `npm ci`, all 16 exact claim commands, and `npm test` passed.
+- Full suite: 11 unit tests and 49 applicable browser tests passed; one desktop run of the phone-only first-screen check was intentionally skipped.
+- Browser coverage includes mobile/desktop Chromium, axe on all routes in both color treatments, keyboard/focus, privacy, offline app/fallback, metadata, routing, 404, touch targets, errors, export/import, and demo isolation.
+- Production budgets: JavaScript 10,654 bytes gzip; CSS 6,033 bytes gzip; mobile hero 14,501 bytes.
+- Local Lighthouse: 100 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 1,508 ms; CLS 0; TBT 39 ms. See [local report](evidence/polish-5/local/lighthouse.json).
+- Deployment `d757e528-1fd2-4dfb-86d5-128222dcf85f` completed. The live audit passed every finding-specific check. See [live audit](evidence/polish-5/live/live-audit.json).
+- Live Lighthouse: 100 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 1,151 ms; CLS 0; TBT 27 ms. See [live report](evidence/polish-5/live/lighthouse.json).
+- `scripts/verify-url.sh https://bird-id-evidence-card.sociobot.in` passed.
+
+No review finding, acceptance gap, TODO, or known product defect remains.
