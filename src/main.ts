@@ -50,6 +50,10 @@ let cards: EvidenceCard[] = [];
 let autosaveTimer: number | undefined;
 let toastTimer: number | undefined;
 let storageHealthy = true;
+const cancelAutosave = (): void => {
+  if (autosaveTimer !== undefined) window.clearTimeout(autosaveTimer);
+  autosaveTimer = undefined;
+};
 const isDemo = (): boolean => location.pathname === '/demo' || new URLSearchParams(location.search).get('demo') === '1';
 type ViewName = 'workbench' | 'records' | 'guide';
 const pathToView = (): ViewName => location.pathname === '/records' ? 'records' : location.pathname === '/guide' ? 'guide' : 'workbench';
@@ -562,6 +566,7 @@ toastAction.addEventListener('click', () => window.location.reload());
 
 byId('reset-demo').addEventListener('click', async () => {
   if (!isDemo()) return;
+  cancelAutosave();
   await clearAllStorage();
   current = sampleEvidenceCard();
   await saveCard(current);
@@ -574,6 +579,7 @@ byId('reset-demo').addEventListener('click', async () => {
 byId('start-real').addEventListener('click', async (event) => {
   if (!isDemo()) return;
   event.preventDefault();
+  cancelAutosave();
   await clearAllStorage();
   location.assign('/');
 });
