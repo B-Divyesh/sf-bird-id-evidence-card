@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { readFile } from 'node:fs/promises';
 import { createBlankCard, getReadiness, isComplete, nextCardNumber, normalizeCard } from '../../src/model';
 import { toCsv, toMarkdown } from '../../src/exports';
 
@@ -56,4 +57,14 @@ describe('evidence card model', () => {
     const second = { ...first, id: 'second', cardNumber: 'BID-20260828-002' };
     expect(nextCardNumber(first, [second], 2)).toBe('BID-20260828-003');
   });
+});
+
+it('@claim:generated-artwork records factory-image provenance for the shipped artwork', async () => {
+  const [design, source] = await Promise.all([
+    readFile(new URL('../../.factory/design.md', import.meta.url), 'utf8'),
+    readFile(new URL('../../assets/src/field-console.json', import.meta.url), 'utf8')
+  ]);
+  expect(design).toContain('factory-image');
+  expect(design).toContain('field-console');
+  expect(source).toContain('factory-image');
 });

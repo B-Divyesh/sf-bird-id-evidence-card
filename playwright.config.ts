@@ -14,7 +14,8 @@ export default defineConfig({
     { name: 'desktop-chromium', use: { ...devices['Desktop Chrome'] } }
   ],
   webServer: {
-    command: 'npm run preview -- --host 127.0.0.1',
+    // Claim commands are run from a clean clone, where dist does not exist yet.
+    command: 'npm run build && npm run preview -- --host 127.0.0.1',
     url: 'http://127.0.0.1:4173',
     reuseExistingServer: true,
     timeout: 30_000

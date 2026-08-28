@@ -64,7 +64,8 @@ Prompt sheet:
 
 - Generated through the factory Azure image model (`factory-image`) on 2026-08-28.
 - Original generated asset; no third-party image or trademark is included.
-- The selected source and prompt sidecar live in `assets/src/`; optimized WebP/AVIF output lives in `public/assets/`.
+- The selected source and prompt sidecar live in `assets/src/field-console.png` and `assets/src/field-console.json`; optimized WebP/AVIF output lives in `public/assets/`.
+- `public/assets/field-console-social.jpg` is a hand-composed 1200 × 630 crop of that original artwork for social cards, made with Sharp on 2026-08-28. It contains no added text or third-party material.
 - App icons are original hand-authored SVG/PNG derivatives of the product's calibration-mark motif.
 
 ## Why it is distinct

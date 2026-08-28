@@ -52,6 +52,32 @@ const routeTitle: Record<'workbench' | 'records' | 'guide', string> = {
   records: 'Saved cards — Bird ID Evidence Card',
   guide: 'Evidence guide — Bird ID Evidence Card'
 };
+const routeMetadata: Record<'workbench' | 'records' | 'guide', { description: string; path: string }> = {
+  workbench: { description: 'Record what you saw and heard before you log an uncertain bird sighting.', path: '/' },
+  records: { description: 'Open, export, import, or delete bird evidence cards stored in this browser.', path: '/records' },
+  guide: { description: 'Check an uncertain bird sighting by recording observations, alternatives, and reference notes.', path: '/guide' }
+};
+const setMetadata = (view: 'workbench' | 'records' | 'guide'): void => {
+  const demo = isDemo();
+  const title = demo ? 'Demo — Bird ID Evidence Card' : routeTitle[view];
+  const details = demo
+    ? { description: 'Try a completed uncertain bird sighting with sample data that stays separate from your cards.', path: '/demo' }
+    : routeMetadata[view];
+  document.title = title;
+  const canonical = `https://bird-id-evidence-card.sociobot.in${details.path}`;
+  const write = (selector: string, value: string): void => {
+    const element = document.head.querySelector<HTMLMetaElement | HTMLLinkElement>(selector);
+    if (!element) return;
+    if (element instanceof HTMLLinkElement) element.href = value;
+    else element.content = value;
+  };
+  write('meta[name="description"]', details.description);
+  write('link[rel="canonical"]', canonical);
+  write('meta[property="og:title"]', title);
+  write('meta[property="og:description"]', details.description);
+  write('meta[name="twitter:title"]', title);
+  write('meta[name="twitter:description"]', details.description);
+};
 
 const escapeHtml = (value: string): string => value.replace(/[&<>'"]/g, (character) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
@@ -200,7 +226,7 @@ const updateDependentControls = (): void => {
     ? '<strong>Precise coordinates will be exported.</strong> Do not expose nesting or sensitive-species locations.'
     : current.locationPrecision === 'approximate'
       ? '<strong>Approximate location selected.</strong> Exports state ~10 km precision and exclude coordinates.'
-      : '<strong>Privacy shutter on.</strong> Coordinates are excluded. Avoid recording nest locations for sensitive species.';
+      : '<strong>Coordinates hidden.</strong> Coordinates are excluded. Avoid recording nest locations for sensitive species.';
   const callNotes = byId<HTMLTextAreaElement>('callNotes');
   callNotes.disabled = current.noCallHeard;
   callNotes.setAttribute('aria-disabled', String(current.noCallHeard));
@@ -289,11 +315,15 @@ const switchView = (name: string, push = true, moveFocus = true): void => {
   });
   if (viewName === 'records') void renderRecords();
   if (push && !isDemo()) history.pushState({ view: viewName }, '', viewPath[viewName as keyof typeof viewPath]);
-  document.title = isDemo() ? 'Demo — Bird ID Evidence Card' : routeTitle[viewName as keyof typeof routeTitle];
-  const heading = byId(`view-${viewName}`).querySelector<HTMLElement>('h2');
-  if (moveFocus) heading?.focus({ preventScroll: true });
+  document.body.classList.remove('route-workbench', 'route-records', 'route-guide');
+  document.body.classList.add(`route-${viewName}`);
+  setMetadata(viewName as keyof typeof routeTitle);
+  const heading = byId(`view-${viewName}`).querySelector<HTMLElement>('h1');
+  if (moveFocus) {
+    window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    window.setTimeout(() => heading?.focus(), 0);
+  }
   byId('route-announcer').textContent = moveFocus ? (heading?.textContent?.trim() ?? 'Bird ID Evidence Card') : '';
-  if (push) window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 const renderRecords = async (): Promise<void> => {

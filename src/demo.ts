@@ -20,7 +20,7 @@ export const sampleEvidenceCard = (): EvidenceCard => ({
     { id: 'demo-fulmar', species: 'Northern Fulmar', source: 'Field app suggestion', confidence: 65, fitNotes: 'Fits the pale body and rigid glide. Contradiction: bill detail was not visible.' },
     { id: 'demo-gull', species: 'Northern Gannet', source: 'Personal hypothesis', confidence: 20, fitNotes: 'Could fit the flight line at distance. Contradiction: bird looked too compact.' }
   ],
-  references: [{ id: 'demo-reference', title: 'Personal field notes: cliff seabirds', url: 'https://example.invalid/personal-notes', license: 'User-owned', comparisonNotes: 'Reminder to compare bill shape later; this link is stored as text only.' }],
+  references: [{ id: 'demo-reference', title: 'Northern Fulmar calls — xeno-canto reference', url: 'https://xeno-canto.org/species/Fulmarus-glacialis', license: 'CC BY-NC-SA', comparisonNotes: 'Open recording catalogue reference. Compare the cackle carefully; this link is stored as text only.' }],
   decision: 'unresolved',
   finalIdentity: '',
   reviewNotes: 'Check bill structure and flight profile against a field guide before logging. Keep this sighting unresolved for now.'

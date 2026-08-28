@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22",
+    "npm": ">=10"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/build-sw.mjs",
+    "build": "vite build && node scripts/build-routes.mjs && node scripts/build-sw.mjs",
     "preview": "vite preview",
     "test:unit": "vitest run",
     "test:build": "node scripts/verify-build.mjs",
@@ -17,6 +21,7 @@
   "devDependencies": {
     "@axe-core/playwright": "4.10.2",
     "@playwright/test": "1.58.2",
+    "@types/node": "^22.18.0",
     "sharp": "0.35.4",
     "typescript": "5.9.2",
     "vite": "7.3.6",
