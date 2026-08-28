@@ -4,36 +4,53 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#174d3c" />
-    <meta name="description" content="Record what you saw and heard, compare uncertain bird candidates, and export the evidence—not just the answer." />
+    <meta name="description" content="Record what you saw and heard before you log an uncertain bird sighting." />
+    <link rel="canonical" href="https://bird-id-evidence-card.sociobot.in/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Bird ID Evidence Card — record uncertain sightings" />
+    <meta property="og:description" content="Record what you saw and heard before you log an uncertain bird sighting." />
+    <meta property="og:image" content="https://bird-id-evidence-card.sociobot.in/assets/field-console-768.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bird ID Evidence Card — record uncertain sightings" />
+    <meta name="twitter:description" content="Record what you saw and heard before you log an uncertain bird sighting." />
+    <meta name="twitter:image" content="https://bird-id-evidence-card.sociobot.in/assets/field-console-768.jpg" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="icon" href="/icon-192.png" />
-    <title>Bird ID Evidence Card — compare before you log</title>
+    <link rel="icon" href="/app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <title>Bird ID Evidence Card — record uncertain sightings</title>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to evidence card</a>
+    <p id="route-announcer" class="sr-only" aria-live="polite"></p>
     <div id="offline-banner" class="offline-banner" role="status" hidden>
       <span aria-hidden="true">●</span> Offline field mode — your work still saves on this device.
     </div>
+    <div id="demo-banner" class="demo-banner" role="status" hidden>
+      <span><strong>Demo</strong> — sample data, nothing is saved.</span>
+      <button id="reset-demo" type="button">Reset demo</button>
+      <a id="start-real" href="/">Start for real</a>
+    </div>
     <header class="site-header">
-      <a class="wordmark" href="#workbench">
+      <a class="wordmark" href="/">
         <span class="wordmark-dial" aria-hidden="true"></span>
         <span><strong>Bird ID</strong><small>Evidence Card</small></span>
       </a>
       <nav aria-label="Primary">
-        <button class="nav-button is-active" type="button" data-view="workbench" aria-current="page">Workbench</button>
-        <button class="nav-button" type="button" data-view="records">Saved cards <span id="record-count" class="count">0</span></button>
-        <button class="nav-button" type="button" data-view="guide">Field guide</button>
+        <a class="nav-button" href="/">Edit evidence card</a>
+        <a class="nav-button" href="/records">View saved cards <span id="record-count" class="count">0</span></a>
+        <a class="nav-button" href="/guide">Read the evidence guide</a>
       </nav>
     </header>
 
     <main id="main">
       <div class="masthead">
         <div class="masthead-copy">
-          <p class="eyebrow">Field console · No ID algorithm</p>
-          <h1>Keep the evidence.<br /><em>Then</em> decide.</h1>
-          <p class="lede">Separate what you observed from what an app suggested. Build a private, portable reasoning trail before you log a bird.</p>
+          <p class="eyebrow">A private evidence card</p>
+          <h1>Record bird evidence before you <em>log.</em></h1>
+          <p class="lede">For birders checking an app suggestion against what they saw and heard.</p>
+          <div class="hero-actions"><a class="primary-button" href="/demo" data-demo-link>Try it with sample data</a><span>See a completed uncertain-sighting card.</span></div>
           <div class="trust-strip" aria-label="Product qualities">
-            <span>Works offline</span><span>Stays on device</span><span>Exports cleanly</span>
+            <span>Works offline after first visit</span><span>Stays on this device</span><span>Free</span>
           </div>
         </div>
         <picture class="masthead-art">
@@ -45,7 +62,7 @@
 
       <section id="view-workbench" class="app-view" aria-labelledby="workbench-title">
         <div class="section-heading">
-          <div><p class="eyebrow">Current observation</p><h2 id="workbench-title" tabindex="-1">Evidence workbench</h2></div>
+          <div><p class="eyebrow">Current observation</p><h2 id="workbench-title" tabindex="-1">Your current evidence card</h2></div>
           <div class="save-readout"><span id="save-lamp" aria-hidden="true"></span><span id="save-status" role="status">Ready locally</span></div>
         </div>
 
@@ -184,7 +201,7 @@
           <span class="empty-dial" aria-hidden="true"></span>
           <h3>No filed cards yet</h3>
           <p>Your current draft is still safe. Save it when you have enough evidence to revisit later.</p>
-          <button class="primary-button" type="button" data-view="workbench">Return to workbench</button>
+          <a class="primary-button" href="/">Edit an evidence card</a>
         </div>
       </section>
 
@@ -210,9 +227,9 @@
     </main>
 
     <footer class="site-footer">
-      <div><strong>Bird ID Evidence Card</strong><p>A small tool for better-calibrated field records.</p></div>
-      <nav aria-label="Legal and project"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="#guide" data-view="guide">How it works</a></nav>
-      <p class="generated-note">Field-console artwork generated for this product with the factory image model.</p>
+      <div><strong>Bird ID Evidence Card</strong><p>A private evidence card for uncertain bird sightings.</p></div>
+      <nav aria-label="Legal and project"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/guide">How it works</a></nav>
+      <p class="generated-note">Built by Param Factory · v1.0.1<br />Field-console artwork generated for this product.</p>
     </footer>
 
     <dialog id="confirm-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-message">

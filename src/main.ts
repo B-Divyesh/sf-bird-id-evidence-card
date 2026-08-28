@@ -16,7 +16,8 @@ import {
   type ViewQuality
 } from './model';
 import { csvHeader, suggestedFilename, summaryText, toCsv, toCsvRow, toMarkdown } from './exports';
-import { clearDraft, deleteCard, getCards, importCards, loadDraft, saveCard, saveDraft, saveNewCard } from './storage';
+import { clearAllStorage, clearDraft, deleteCard, getCards, importCards, loadDraft, saveCard, saveDraft, saveNewCard, useDemoStorage } from './storage';
+import { sampleEvidenceCard } from './demo';
 
 const byId = <T extends HTMLElement>(id: string): T => {
   const element = document.getElementById(id);
@@ -43,6 +44,14 @@ let cards: EvidenceCard[] = [];
 let autosaveTimer: number | undefined;
 let toastTimer: number | undefined;
 let storageHealthy = true;
+const isDemo = (): boolean => location.pathname === '/demo' || new URLSearchParams(location.search).get('demo') === '1';
+const pathToView = (): 'workbench' | 'records' | 'guide' => location.pathname === '/records' ? 'records' : location.pathname === '/guide' ? 'guide' : 'workbench';
+const viewPath: Record<'workbench' | 'records' | 'guide', string> = { workbench: '/', records: '/records', guide: '/guide' };
+const routeTitle: Record<'workbench' | 'records' | 'guide', string> = {
+  workbench: 'Bird ID Evidence Card — record uncertain sightings',
+  records: 'Saved cards — Bird ID Evidence Card',
+  guide: 'Evidence guide — Bird ID Evidence Card'
+};
 
 const escapeHtml = (value: string): string => value.replace(/[&<>'"]/g, (character) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
@@ -270,18 +279,21 @@ const isMeaningfulDraft = (card: EvidenceCard): boolean => Boolean(
   card.candidates.some((item) => item.species) || card.references.length || card.cardNumber
 );
 
-const switchView = (name: string, updateHash = true): void => {
+const switchView = (name: string, push = true, moveFocus = true): void => {
   const viewName = ['workbench', 'records', 'guide'].includes(name) ? name : 'workbench';
   document.querySelectorAll<HTMLElement>('.app-view').forEach((item) => { item.hidden = item.id !== `view-${viewName}`; });
-  document.querySelectorAll<HTMLButtonElement>('.nav-button').forEach((item) => {
-    const active = item.dataset.view === viewName;
+  document.querySelectorAll<HTMLAnchorElement>('.nav-button').forEach((item) => {
+    const active = item.getAttribute('href') === viewPath[viewName as keyof typeof viewPath];
     item.classList.toggle('is-active', active);
     if (active) item.setAttribute('aria-current', 'page'); else item.removeAttribute('aria-current');
   });
   if (viewName === 'records') void renderRecords();
-  if (updateHash) history.replaceState(null, '', `#${viewName}`);
-  byId(`view-${viewName}`).querySelector<HTMLElement>('h2')?.focus({ preventScroll: true });
-  window.scrollTo({ top: viewName === 'workbench' ? byId('view-workbench').offsetTop - 40 : byId(`view-${viewName}`).offsetTop - 40, behavior: 'smooth' });
+  if (push && !isDemo()) history.pushState({ view: viewName }, '', viewPath[viewName as keyof typeof viewPath]);
+  document.title = isDemo() ? 'Demo — Bird ID Evidence Card' : routeTitle[viewName as keyof typeof routeTitle];
+  const heading = byId(`view-${viewName}`).querySelector<HTMLElement>('h2');
+  if (moveFocus) heading?.focus({ preventScroll: true });
+  byId('route-announcer').textContent = moveFocus ? (heading?.textContent?.trim() ?? 'Bird ID Evidence Card') : '';
+  if (push) window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 const renderRecords = async (): Promise<void> => {
@@ -401,10 +413,12 @@ byId('new-card').addEventListener('click', async () => {
 });
 
 document.addEventListener('click', (event) => {
-  const control = (event.target as HTMLElement).closest<HTMLElement>('[data-view]');
-  if (!control) return;
+  const link = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[href]');
+  if (!link || link.target || link.origin !== location.origin || link.hasAttribute('data-demo-link')) return;
+  const route = new URL(link.href).pathname;
+  if (!['/', '/records', '/guide'].includes(route)) return;
   event.preventDefault();
-  switchView(control.dataset.view ?? 'workbench');
+  switchView(route === '/records' ? 'records' : route === '/guide' ? 'guide' : 'workbench');
 });
 
 byId('records-list').addEventListener('click', async (event) => {
@@ -487,12 +501,43 @@ const registerServiceWorker = async (): Promise<void> => {
 
 toastAction.addEventListener('click', () => window.location.reload());
 
+byId('reset-demo').addEventListener('click', async () => {
+  if (!isDemo()) return;
+  await clearAllStorage();
+  current = sampleEvidenceCard();
+  await saveCard(current);
+  await saveDraft(current);
+  cards = [current];
+  populateForm();
+  byId('record-count').textContent = '1';
+  showToast('Sample evidence card reset.');
+});
+
+byId('start-real').addEventListener('click', async (event) => {
+  if (!isDemo()) return;
+  event.preventDefault();
+  await clearAllStorage();
+  location.assign('/');
+});
+
+window.addEventListener('popstate', () => switchView(pathToView(), false));
+
 const initialize = async (): Promise<void> => {
+  const demo = isDemo();
+  useDemoStorage(demo);
+  document.body.classList.toggle('demo-mode', demo);
+  byId('demo-banner').hidden = !demo;
   updateOnlineState();
   try {
     const [draft, savedCards] = await Promise.all([loadDraft(), getCards()]);
     const normalizedDraft = normalizeCard(draft);
     if (normalizedDraft) current = normalizedDraft;
+    else if (demo) {
+      current = sampleEvidenceCard();
+      await saveCard(current);
+      await saveDraft(current);
+      cards = [current];
+    }
     cards = savedCards.map(normalizeCard).filter((card): card is EvidenceCard => card !== null);
     setSaveState(draft ? 'Draft restored from this device' : 'Ready locally');
   } catch (error) {
@@ -502,8 +547,7 @@ const initialize = async (): Promise<void> => {
   }
   byId('record-count').textContent = String(cards.length);
   populateForm();
-  const hashView = location.hash.slice(1);
-  if (['records', 'guide'].includes(hashView)) switchView(hashView, false);
+  switchView(pathToView(), false, false);
   void registerServiceWorker();
 };
 

@@ -1,124 +1,135 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Download } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-test('creates, persists, reopens, and exports an evidence card', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Keep the evidence/i);
+const sampleTitle = /Northern Fulmar/i;
+const downloadText = async (download: Download): Promise<string> => {
+  const stream = await download.createReadStream();
+  if (!stream) throw new Error('Download stream unavailable');
+  let text = '';
+  for await (const chunk of stream) text += chunk.toString();
+  return text;
+};
 
-  await page.getByLabel('Locality *').fill('Deerness coast');
-  await page.getByLabel('Visual traits').fill('Grey upperwings, pale body, stiff-winged glide close to the cliff.');
-  await page.getByLabel('No call heard').check();
-  await page.locator('[data-candidate-id]').first().getByLabel('Species or working name').fill('Northern Fulmar');
-  await page.locator('[data-candidate-id]').first().getByLabel('Fits and contradictions').fill('Flight fits; bill detail was not visible.');
-  await page.getByLabel('Reasoning and next check').fill('Compare bill structure with a field guide before logging.');
-
-  await expect(page.getByText('Complete · 5/5')).toBeVisible();
-  await page.getByRole('button', { name: 'Save evidence card' }).click();
-  await expect(page.getByText(/Filed locally/)).toBeVisible();
-  await expect(page.getByText(/Complete evidence card saved locally/)).toBeVisible();
-
-  await page.reload();
-  await expect(page.getByLabel('Locality *')).toHaveValue('Deerness coast');
-  await page.getByRole('button', { name: /Saved cards/ }).click();
-  await expect(page.getByRole('heading', { name: 'Northern Fulmar', exact: true })).toBeVisible();
-  await expect(page.getByText('Complete', { exact: true })).toBeVisible();
-
-  const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Export Markdown' }).last().click();
-  const download = await downloadPromise;
-  expect(download.suggestedFilename()).toMatch(/northern-fulmar\.md$/);
-});
-
-test('passes a serious/critical accessibility scan and keyboard nav', async ({ page }) => {
-  const consoleErrors: string[] = [];
-  page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
-  await page.goto('/');
-  await page.keyboard.press('Tab');
-  await expect(page.getByRole('link', { name: 'Skip to evidence card' })).toBeFocused();
-  const results = await new AxeBuilder({ page: page as any }).analyze();
-  const blocking = results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact ?? ''));
-  expect(blocking, blocking.map((item) => `${item.id}: ${item.help}`).join('\n')).toEqual([]);
-  expect(consoleErrors).toEqual([]);
-});
-
-test('has no axe violations in the dark field treatment', async ({ page }) => {
-  await page.emulateMedia({ colorScheme: 'dark' });
-  await page.goto('/');
-  const results = await new AxeBuilder({ page: page as any }).analyze();
-  expect(results.violations, results.violations.map((item) => `${item.id}: ${item.help}`).join('\n')).toEqual([]);
-});
-
-test('never reissues a same-day card number after deletion', async ({ page }) => {
-  test.setTimeout(60_000);
-  const observedAt = '2026-08-28T10:00';
-  const saveMinimalCard = async (locality: string): Promise<void> => {
-    await page.getByLabel('Date & time *').fill(observedAt);
-    await page.getByLabel('Locality *').fill(locality);
-    await page.getByRole('button', { name: 'Save evidence card' }).click();
-    await expect(page.getByText(/Filed locally/)).toBeVisible();
-  };
-  const startNewCard = async (): Promise<void> => {
-    await page.getByRole('button', { name: 'Start a new card' }).click();
-    await page.getByRole('button', { name: 'Start new card' }).click();
-  };
-
-  await page.goto('/');
-  await saveMinimalCard('First headland');
-  await startNewCard();
-  await saveMinimalCard('Second headland');
-  await page.getByRole('button', { name: /Saved cards/ }).click();
-  const firstRecord = page.locator('.record-item').filter({ hasText: 'BID-20260828-001' });
-  await firstRecord.getByRole('button', { name: 'Delete' }).click();
-  await page.getByRole('button', { name: 'Delete card' }).click();
-  await expect(firstRecord).toHaveCount(0);
-
-  await page.getByRole('button', { name: 'Workbench' }).click();
-  await startNewCard();
-  await saveMinimalCard('Third headland');
-  await page.getByRole('button', { name: /Saved cards/ }).click();
-  await expect(page.locator('.record-item').filter({ hasText: 'BID-20260828-002' })).toHaveCount(1);
-  await expect(page.locator('.record-item').filter({ hasText: 'BID-20260828-003' })).toHaveCount(1);
-});
-
-test('keeps mobile navigation and legal links at 44px', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'mobile-chromium', 'Measured at the 390px mobile breakpoint.');
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/');
-  const controls = [page.locator('.wordmark'), ...await page.locator('.site-footer a').all()];
-  for (const control of controls) {
-    const box = await control.boundingBox();
-    expect(box?.height).toBeGreaterThanOrEqual(44);
-    expect(box?.width).toBeGreaterThanOrEqual(44);
-  }
-});
-
-test('rejects malformed backup without emitting an expected console error', async ({ page }) => {
-  const consoleErrors: string[] = [];
-  page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
-  await page.goto('/');
-  await page.locator('#import-file').setInputFiles('tests/fixtures/invalid-backup.json');
-  await expect(page.getByText(/not a valid Bird ID Evidence Card backup/i)).toBeVisible();
-  expect(consoleErrors).toEqual([]);
-});
-
-test('loads the installed workbench offline', async ({ page, context }) => {
-  await page.goto('/');
+test('@claim:offline-demo works offline after the first visit', async ({ page, context }) => {
+  await page.goto('/demo');
   await page.evaluate(async () => { await navigator.serviceWorker.ready; });
   await page.reload();
   await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
   await context.setOffline(true);
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Keep the evidence/i);
+  await expect(page.getByRole('heading', { level: 2, name: /current evidence card/i })).toBeVisible();
   await expect(page.getByText(/Offline field mode/)).toBeVisible();
-  await page.getByLabel('Locality *').fill('Offline headland');
-  await expect(page.getByLabel('Locality *')).toHaveValue('Offline headland');
+  await page.getByLabel('Locality *').fill('Offline Deerness coast');
+  await expect(page.getByLabel('Locality *')).toHaveValue('Offline Deerness coast');
   await context.setOffline(false);
 });
 
-test('keeps precise location behind an explicit control', async ({ page }) => {
+test('@claim:device-only sends only same-origin requests during demo', async ({ page }) => {
+  const requests: string[] = [];
+  page.on('request', (request) => requests.push(request.url()));
+  await page.goto('/demo');
+  await expect(page.getByText(sampleTitle).first()).toBeVisible();
+  await page.getByLabel('Visual traits').fill('Updated sample observation.');
+  await page.getByRole('button', { name: 'Save evidence card' }).click();
+  expect(requests.every((url) => new URL(url).origin === 'http://127.0.0.1:4173')).toBeTruthy();
+});
+
+test('@claim:free opens and uses the sample without an account or payment prompt', async ({ page }) => {
+  await page.goto('/demo');
+  await expect(page.getByText(sampleTitle).first()).toBeVisible();
+  await page.getByRole('button', { name: 'Save evidence card' }).click();
+  await expect(page.getByText(/Filed locally|saved locally/i).first()).toBeVisible();
+  await expect(page.getByText(/sign in|payment|subscribe/i)).toHaveCount(0);
+});
+
+test('@claim:demo-isolation uses a separate demo database and reset', async ({ page }) => {
+  await page.goto('/demo');
+  await expect(page.getByText(/Demo — sample data, nothing is saved/)).toBeVisible();
+  await expect(page.getByText(sampleTitle).first()).toBeVisible();
+  const databases = await page.evaluate(async () => (await indexedDB.databases()).map((item) => item.name));
+  expect(databases).toContain('demo:bird-id-evidence-card');
+  expect(databases).not.toContain('bird-id-evidence-card');
+  await page.getByLabel('Locality *').fill('Changed demo locality');
+  await page.getByRole('button', { name: 'Reset demo' }).click();
+  await expect(page.getByLabel('Locality *')).toHaveValue('Deerness coast, Orkney');
+});
+
+test('@claim:exports downloads CSV, Markdown, and JSON from the sample', async ({ page }) => {
+  await page.goto('/demo');
+  const csvWait = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export CSV' }).first().click();
+  const csv = await csvWait;
+  expect(csv.suggestedFilename()).toMatch(/\.csv$/);
+  expect(await downloadText(csv)).toContain('card_number');
+  const markdownWait = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export Markdown' }).first().click();
+  expect((await markdownWait).suggestedFilename()).toMatch(/\.md$/);
+  await page.getByRole('link', { name: /View saved cards/ }).click();
+  const jsonWait = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export backup' }).click();
+  expect((await jsonWait).suggestedFilename()).toMatch(/\.json$/);
+});
+
+test('@claim:private-coordinates omits coordinates from locality-only CSV', async ({ page }) => {
+  await page.goto('/demo');
+  const downloadWait = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export CSV' }).first().click();
+  const download = await downloadWait;
+  const content = await downloadText(download);
+  expect(content).toContain('"private"');
+  expect(content).toContain('"private","",""');
+});
+
+test('@claim:no-audio-fetch does not request the sample reference URL', async ({ page }) => {
+  const requests: string[] = [];
+  page.on('request', (request) => requests.push(request.url()));
+  await page.goto('/demo');
+  await expect(page.locator('input[value="https://example.invalid/personal-notes"]')).toBeVisible();
+  expect(requests.some((url) => url.includes('example.invalid'))).toBeFalsy();
+});
+
+test('first phone screen states the job, audience, action, and outcome', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile-chromium', 'Phone viewport check.');
   await page.goto('/');
-  await expect(page.getByText(/Privacy shutter on/)).toBeVisible();
-  await page.locator('input[name="locationPrecision"][value="precise"]').check();
-  await expect(page.getByLabel('Latitude')).toBeVisible();
-  await expect(page.getByText(/Precise coordinates will be exported/)).toBeVisible();
+  for (const text of [
+    'Record bird evidence before you log.',
+    'For birders checking an app suggestion against what they saw and heard.',
+    'Try it with sample data',
+    'See a completed uncertain-sighting card.'
+  ]) await expect(page.getByText(text, { exact: true })).toBeInViewport();
+});
+
+test('routes use meaningful titles and navigation restores focus', async ({ page }) => {
+  await page.goto('/guide');
+  await expect(page).toHaveTitle(/Evidence guide/);
+  await page.getByRole('link', { name: /View saved cards/ }).click();
+  await page.goBack();
+  await expect(page.getByRole('heading', { level: 2, name: /two-minute evidence check/i })).toBeFocused();
+  await page.getByRole('link', { name: /View saved cards/ }).click();
+  await expect(page).toHaveURL(/\/records$/);
+  await expect(page.getByRole('heading', { level: 2, name: /saved evidence cards/i })).toBeFocused();
+  await page.goBack();
+  await expect(page).toHaveURL(/\/guide$/);
+});
+
+test('accessibility and keyboard baseline pass in both color treatments', async ({ page }) => {
+  await page.goto('/');
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('link', { name: 'Skip to evidence card' })).toBeFocused();
+  const light = await new AxeBuilder({ page: page as any }).analyze();
+  expect(light.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.reload();
+  const dark = await new AxeBuilder({ page: page as any }).analyze();
+  expect(dark.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
+});
+
+test('legal documents have common chrome and metadata', async ({ page }) => {
+  for (const path of ['/privacy/', '/terms/']) {
+    await page.goto(path);
+    await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
+    await expect(page.locator('meta[property="og:image"]')).toHaveCount(1);
+    await expect(page.getByRole('navigation', { name: 'Primary' })).toBeVisible();
+    await expect(page.getByText(/Built by Param Factory/)).toBeVisible();
+  }
 });

@@ -1,6 +1,7 @@
 import { cardDay, cardSequence, nextCardNumber, type EvidenceCard } from './model';
 
-const DB_NAME = 'bird-id-evidence-card';
+const REAL_DB_NAME = 'bird-id-evidence-card';
+const DEMO_DB_NAME = 'demo:bird-id-evidence-card';
 const DB_VERSION = 2;
 const CARD_STORE = 'cards';
 const META_STORE = 'meta';
@@ -17,11 +18,20 @@ const transactionDone = (transaction: IDBTransaction): Promise<void> => new Prom
 });
 
 let connection: Promise<IDBDatabase> | undefined;
+let databaseName = REAL_DB_NAME;
+
+/** Demo mode has a wholly separate IndexedDB database: it never opens the real one. */
+export const useDemoStorage = (demo: boolean): void => {
+  databaseName = demo ? DEMO_DB_NAME : REAL_DB_NAME;
+  connection = undefined;
+};
+
+export const activeStorageName = (): string => databaseName;
 
 const db = (): Promise<IDBDatabase> => {
   if (!('indexedDB' in globalThis)) return Promise.reject(new Error('IndexedDB is not available'));
   connection ??= new Promise((resolve, reject) => {
-    const opening = indexedDB.open(DB_NAME, DB_VERSION);
+    const opening = indexedDB.open(databaseName, DB_VERSION);
     opening.onupgradeneeded = () => {
       const database = opening.result;
       if (!database.objectStoreNames.contains(CARD_STORE)) database.createObjectStore(CARD_STORE, { keyPath: 'id' });
@@ -112,5 +122,13 @@ export const importCards = async (cards: EvidenceCard[]): Promise<void> => {
     const previousSequence = Number(existing.find(([existingKey]) => existingKey === key)?.[1]) || 0;
     if (importedSequence > previousSequence) metaStore.put(importedSequence, key);
   }
+  await transactionDone(transaction);
+};
+
+export const clearAllStorage = async (): Promise<void> => {
+  const database = await db();
+  const transaction = database.transaction([CARD_STORE, META_STORE], 'readwrite');
+  transaction.objectStore(CARD_STORE).clear();
+  transaction.objectStore(META_STORE).clear();
   await transactionDone(transaction);
 };

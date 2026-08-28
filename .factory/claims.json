@@ -1,0 +1,9 @@
+[
+  {"id":"offline-demo","claim":"Works offline after the first visit","where":"landing facts, README","test":"npm run test:e2e -- --grep @claim:offline-demo","sandbox":"fresh browser context at /demo; service worker control; offline reload and edit"},
+  {"id":"device-only","claim":"Stays on this device","where":"landing facts, Privacy","test":"npm run test:e2e -- --grep @claim:device-only","sandbox":"intercept all requests through demo flow; assert only same-origin requests"},
+  {"id":"free","claim":"Free","where":"landing facts","test":"npm run test:e2e -- --grep @claim:free","sandbox":"fresh demo; use the full sample workflow without an account or payment prompt"},
+  {"id":"demo-isolation","claim":"Demo — sample data, nothing is saved","where":"demo banner, README","test":"npm run test:e2e -- --grep @claim:demo-isolation","sandbox":"fresh demo; inspect IndexedDB names and verify real database remains empty"},
+  {"id":"exports","claim":"Exports demo evidence cards as CSV, Markdown, and JSON","where":"README","test":"npm run test:e2e -- --grep @claim:exports","sandbox":"demo card; download and inspect all three formats"},
+  {"id":"private-coordinates","claim":"Locality-only exports exclude coordinates","where":"Privacy, form help","test":"npm run test:e2e -- --grep @claim:private-coordinates","sandbox":"demo card with private precision; inspect CSV columns"},
+  {"id":"no-audio-fetch","claim":"Reference links are stored as text and are not fetched","where":"Privacy, README","test":"npm run test:e2e -- --grep @claim:no-audio-fetch","sandbox":"demo with reference URL; assert no request goes to its origin"}
+]
