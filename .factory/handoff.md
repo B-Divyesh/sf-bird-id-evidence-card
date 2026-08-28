@@ -53,11 +53,12 @@ Fresh-worker infrastructure retry at `4d9e6eb510220fdd6b2f5a231b866c547c84944d`:
 ## Deployment and live checks
 
 - Public URL: <https://bird-id-evidence-card.sociobot.in/>
-- Azure Static Web Apps deployment: `31bd70d3-883b-4089-a176-02e117b95973`.
+- Azure Static Web Apps deployment: `9b5ac897-9026-4fb0-a1aa-019c4fc4e375` from pushed commit `e8cc8cd9a5d23f8c938ecfb6ea96d80bfd858259`.
 - `verify-url.sh`: 200 response, correct title/lang, one `<h1>`, `<main>`, all image alt text, no unlabeled buttons, no console errors.
 - `npm run test:live -- https://bird-id-evidence-card.sociobot.in .factory/evidence/polish-3/live`: passed after the final deployment.
 - Cold live audit covered six 200 routes, a real unknown-route 404, raw/rendered heading counts, metadata, common chrome, focus, 390px layout, 44px targets, axe, console errors, same-origin traffic, cookies/localStorage, demo reset/isolation, and offline demo/legal reloads.
-- Live Lighthouse 13.4.1: performance 100, accessibility 100, best practices 100, SEO 100; FCP 907 ms, LCP 1,132 ms, TBT 0 ms, CLS 0.
+- All 28 publicly served build files matched local `dist/` byte-for-byte by SHA-256. Hashed assets have a one-year immutable cache policy.
+- Live Lighthouse 13.4.1: performance 100, accessibility 100, best practices 100, SEO 100; FCP 937 ms, LCP 1,221 ms, TBT 0 ms, CLS 0.
 - Screenshots: `.factory/evidence/polish-3/live/home-mobile.png`, `demo-mobile.png`, `screenshot-mobile.png`, and `screenshot-desktop.png`.
 - Machine-readable results: `.factory/evidence/polish-3/live/live-audit.json`, `live/verify.json`, and `lighthouse-live-summary.json`.
 

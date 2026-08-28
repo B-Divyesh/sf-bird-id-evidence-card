@@ -1,6 +1,6 @@
 {
-  "url": "https://bird-id-evidence-card.sociobot.in/",
-  "loadMs": 777,
+  "url": "https://bird-id-evidence-card.sociobot.in",
+  "loadMs": 633,
   "errors": [],
   "a11y": {
     "title": "Bird ID Evidence Card — record uncertain sightings",
@@ -9,6 +9,6 @@
     "main": true,
     "imgsMissingAlt": 0,
     "buttonsUnlabeled": 0,
-    "textLength": 2588
+    "textLength": 2587
   }
 }

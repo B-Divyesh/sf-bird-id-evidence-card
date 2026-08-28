@@ -35,7 +35,7 @@
   },
   "live": {
     "url": "https://bird-id-evidence-card.sociobot.in/",
-    "deploymentId": "31bd70d3-883b-4089-a176-02e117b95973",
+    "deploymentId": "9b5ac897-9026-4fb0-a1aa-019c4fc4e375",
     "audit": "passed",
     "verifyUrl": "passed",
     "lighthouse": "100 performance / 100 accessibility / 100 best practices / 100 SEO"
