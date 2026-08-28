@@ -18,8 +18,12 @@
 
 ## Deployment and live check
 
-Pending this work order's static deployment. After deployment, record cold checks for `/`, `/demo`, `/records`, `/guide`, `/privacy/`, `/terms/`, and an unknown URL here.
+- Deployed production build with `/opt/fleet/lib/deploy-static.sh bird-id-evidence-card dist`; Azure deployment `81adb915-fcca-4b4f-b089-28c3310bbd54` completed successfully on 2026-08-28.
+- Cold live route/status check: `/`, `/demo`, `/records`, `/guide`, `/privacy/`, and `/terms/` each returned 200. `/not-a-real-route` returned the designed 404 with HTTP 404.
+- Cold Chromium check confirmed route-specific titles, visible route `<h1>` values, and canonical URLs for every public route. `/demo` showed the persistent demo banner and Northern Fulmar sample.
+- Live header check found the required CSP, `Referrer-Policy`, and `X-Content-Type-Options`. Live demo browser check: zero console errors, zero external requests, and zero serious/critical axe violations.
+- Live mobile evidence: `/tmp/bird-polish2-live-demo.png`.
 
 ## Known gaps
 
-None in the product. The only remaining operation is the required deploy-and-cold-live verification.
+None.
