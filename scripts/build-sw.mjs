@@ -15,7 +15,9 @@ const walk = async (directory) => {
 const rootPath = root.pathname;
 const assets = (await walk(rootPath))
   .map((path) => `/${relative(rootPath, path).replaceAll('\\', '/')}`)
-  .filter((path) => path !== '/sw.js' && !path.endsWith('.map'))
+  // Azure consumes this host configuration but intentionally does not serve it.
+  // It must never make the offline app-shell install fail.
+  .filter((path) => !['/sw.js', '/staticwebapp.config.json'].includes(path) && !path.endsWith('.map'))
   .sort();
 
 const version = `v1-${Date.now()}`;
