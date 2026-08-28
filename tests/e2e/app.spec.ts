@@ -307,6 +307,10 @@ test('accessibility and keyboard baseline pass in both color treatments', async 
 });
 
 test('all routes have no axe violations, horizontal overflow, or undersized chrome targets', async ({ page }, testInfo) => {
+  await page.goto('/');
+  await page.getByLabel('Date & time *').fill('2026-08-28T10:12');
+  await page.getByLabel('Locality *').fill('Accessibility route check');
+  await page.getByRole('button', { name: 'Save evidence card' }).click();
   const paths = ['/', '/demo', '/records', '/guide', '/privacy/', '/terms/', '/404.html'];
   for (const path of paths) {
     await page.goto(path);

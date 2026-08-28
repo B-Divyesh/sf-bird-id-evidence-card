@@ -374,7 +374,7 @@ const renderRecords = async (): Promise<void> => {
     const ready = getReadiness(card);
     const complete = ready.every((item) => item.complete);
     return `<article class="record-item" data-record-id="${escapeHtml(card.id)}">
-      <div class="record-item-top"><div><p class="eyebrow">${escapeHtml(card.cardNumber || 'Unfiled')}</p><h3>${escapeHtml(cardTitle(card))}</h3></div><span class="status-tag">${complete ? 'Complete' : `${ready.filter((item) => item.complete).length}/5 draft`}</span></div>
+      <div class="record-item-top"><div><p class="eyebrow">${escapeHtml(card.cardNumber || 'Unfiled')}</p><h2>${escapeHtml(cardTitle(card))}</h2></div><span class="status-tag">${complete ? 'Complete' : `${ready.filter((item) => item.complete).length}/5 draft`}</span></div>
       <p class="record-meta">${escapeHtml(formatObserved(card.observedAt))} · ${escapeHtml(card.locationName || 'Locality not recorded')} · ${card.decision}</p>
       <p class="record-summary">${escapeHtml(summaryText(card))}</p>
       <div class="record-actions"><button type="button" data-action="edit">Open card</button><button type="button" data-action="markdown">Export Markdown</button><button type="button" data-action="csv">Export CSV</button><button class="delete-record" type="button" data-action="delete">Delete</button></div>

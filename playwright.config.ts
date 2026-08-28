@@ -2,13 +2,14 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests/e2e',
-  fullyParallel: false,
+  // Fully parallel grouping lets the sharded npm runner recycle Chromium
+  // between small batches even when CI is constrained to one worker.
+  fullyParallel: true,
   workers: 1,
   retries: 0,
   reporter: 'list',
   use: {
     baseURL: 'http://127.0.0.1:4173',
-    channel: 'chromium',
     trace: 'retain-on-failure'
   },
   projects: [

@@ -200,7 +200,7 @@ input[type="range"] { width: 100%; min-height: 44px; margin-top: 4px; accent-col
 .record-item { display: flex; flex-direction: column; padding: 22px; border: 1px solid var(--ink); background: var(--surface); box-shadow: 5px 5px 0 var(--panel-deep); content-visibility: auto; contain-intrinsic-size: 280px; }
 .record-item-top { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
 .record-item .eyebrow { color: var(--muted); }
-.record-item h3 { margin: 0 0 8px; font: 800 25px/1.1 var(--sans); text-transform: uppercase; }
+.record-item h2 { margin: 0 0 8px; font: 800 25px/1.1 var(--sans); text-transform: uppercase; }
 .record-meta { margin: 0; color: var(--muted); font-size: 14px; }
 .status-tag { flex: 0 0 auto; padding: 5px 8px; border: 1px solid var(--ink); background: var(--panel); font: 800 10px/1 var(--sans); text-transform: uppercase; }
 .record-summary { flex: 1; margin: 18px 0; padding-top: 15px; border-top: 1px solid var(--line); font-size: 15px; }
