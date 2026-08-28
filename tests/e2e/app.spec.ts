@@ -30,12 +30,15 @@ test('creates, persists, reopens, and exports an evidence card', async ({ page }
 });
 
 test('passes a serious/critical accessibility scan and keyboard nav', async ({ page }) => {
+  const consoleErrors: string[] = [];
+  page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
   await page.goto('/');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: 'Skip to evidence card' })).toBeFocused();
   const results = await new AxeBuilder({ page: page as any }).analyze();
   const blocking = results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact ?? ''));
   expect(blocking, blocking.map((item) => `${item.id}: ${item.help}`).join('\n')).toEqual([]);
+  expect(consoleErrors).toEqual([]);
 });
 
 test('loads the installed workbench offline', async ({ page, context }) => {
