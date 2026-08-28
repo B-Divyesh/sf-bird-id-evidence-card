@@ -42,6 +42,16 @@ describe('evidence card model', () => {
     expect(toMarkdown(card)).toContain('58.938, -2.744');
   });
 
+  it('excludes incomplete or invalid precise coordinates', () => {
+    const card = createBlankCard();
+    card.locationPrecision = 'precise';
+    card.latitude = '58.938';
+    expect(toCsv(card)).not.toContain('58.938');
+    expect(toMarkdown(card)).toContain('coordinates not included');
+    card.longitude = '-181';
+    expect(toCsv(card)).not.toContain('58.938');
+  });
+
   it('rejects malformed imports and clamps candidate confidence', () => {
     expect(normalizeCard({ nonsense: true })).toBeNull();
     const card = createBlankCard();

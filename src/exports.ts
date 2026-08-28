@@ -2,8 +2,14 @@ import { cardTitle, getReadiness, leadingCandidate, type EvidenceCard } from './
 
 const safeLine = (value: string): string => value.replace(/[\r\n]+/g, ' ').trim();
 const displayDate = (value: string): string => value ? new Date(value).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' }) : 'Not recorded';
+const hasValidCoordinates = (card: EvidenceCard): boolean => {
+  if (card.locationPrecision !== 'precise' || card.latitude.trim() === '' || card.longitude.trim() === '') return false;
+  const latitude = Number(card.latitude);
+  const longitude = Number(card.longitude);
+  return Number.isFinite(latitude) && Number.isFinite(longitude) && latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180;
+};
 const privacyDescription = (card: EvidenceCard): string => card.locationPrecision === 'precise'
-  ? `Precise${card.latitude && card.longitude ? ` (${card.latitude}, ${card.longitude})` : ' (coordinates not recorded)'}`
+  ? `Precise${hasValidCoordinates(card) ? ` (${card.latitude}, ${card.longitude})` : ' (coordinates not included)'}`
   : card.locationPrecision === 'approximate' ? 'Approximate (~10 km)' : 'Private (locality only; coordinates excluded)';
 
 export const toMarkdown = (card: EvidenceCard): string => {
@@ -67,7 +73,7 @@ export const csvHeader = [
 
 export const toCsvRow = (card: EvidenceCard): string => {
   const candidates = card.candidates.filter((item) => item.species.trim());
-  const precise = card.locationPrecision === 'precise';
+  const precise = hasValidCoordinates(card);
   const values: unknown[] = [
     card.cardNumber, card.observedAt, card.locationName, card.locationPrecision, precise ? card.latitude : '', precise ? card.longitude : '',
     card.habitat, card.conditions, card.viewQuality, card.visualTraits, card.callNotes, card.noCallHeard,

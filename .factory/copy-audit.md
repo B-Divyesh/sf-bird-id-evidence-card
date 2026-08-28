@@ -1,32 +1,44 @@
-# Copy audit — polish 2
+# Copy audit — polish 3
 
-Every visitor-facing sentence or sentence-like instruction on the landing application was checked on 2026-08-28. Word counts treat a hyphenated term as one word. No sentence exceeds 22 words and no banned marketing word is used.
+Checked 2026-08-28. Hyphenated terms count as one word. No public sentence exceeds 22 words. No banned marketing word appears. File-format terms are explained where a visitor chooses an export.
 
-## Landing and app copy
+## Landing, workbench, demo, and guide
 
 | Copy | Words | Result |
 | --- | ---: | --- |
-| Record bird evidence before you log. | 6 | Listed claim: `record-evidence-card` |
+| Record bird evidence before you log. | 6 | `record-evidence-card` |
 | For birders checking an app suggestion against what they saw and heard. | 12 | Pass |
 | See a completed uncertain-sighting card. | 5 | Pass |
-| Works offline after first visit | 5 | Listed claim: `offline-demo` |
-| Stays on this device | 4 | Listed claim: `device-only` |
-| Free | 1 | Listed claim: `free` |
-| Demo — sample data, nothing is saved. | 7 | Listed claim: `demo-isolation` |
+| Works offline after first visit | 5 | `offline-demo` |
+| Stays on this device | 4 | `device-only` |
+| Free | 1 | `free` |
+| Demo — sample data, nothing is saved. | 7 | `demo-isolation` |
 | Name the broad place, not a nest site. | 8 | Pass |
 | Coordinates hidden. | 2 | Pass |
-| Coordinates are excluded. | 3 | Listed claim: `private-coordinates` |
+| Coordinates are excluded. | 3 | `private-coordinates` |
 | Avoid recording nest locations for sensitive species. | 7 | Pass |
+| Write only what you noticed: size, shape, flight, bill, plumage, behaviour… | 11 | Pass |
 | Specific negatives help too: “no black wing tips visible.” | 9 | Pass |
+| Rhythm, pitch, repetition, distance, direction—and whether the caller was visible. | 11 | Pass |
 | This is still useful observed evidence. | 6 | Pass |
 | Record who suggested it and why it does or does not fit. | 12 | Pass |
 | Set your confidence. | 3 | Pass |
+| Fits: stiff-winged glide. | 3 | Pass |
+| Contradiction: call seemed sharper… | 4 | Pass |
 | Link to material you have permission to use. | 8 | Pass |
-| This app stores the link and your notes; it never copies or hosts the audio. | 15 | Listed claim: `no-audio-fetch` |
+| The app stores the link as text and does not fetch it. | 12 | `no-audio-fetch` |
 | No references linked yet. | 4 | Pass |
 | This step is optional. | 4 | Pass |
-| A complete card does not confirm the species. | 8 | Pass |
-| It records what you observed and what still needs checking. | 10 | Listed claim: `record-evidence-card` |
+| What matched or differed? | 4 | Pass |
+| What supports or contradicts the leading candidate? | 7 | Pass |
+| What would resolve it? | 4 | Pass |
+| Your visual and audio notes will appear here. | 8 | Pass |
+| A complete card does not confirm the species. | 8 | `no-automatic-identification` |
+| It records what you observed and what still needs checking. | 10 | `record-evidence-card` |
+| CSV opens in a spreadsheet. | 5 | Explains format |
+| Markdown is a shareable text card. | 6 | Explains format |
+| A backup saves all cards for moving to another browser. | 10 | `exports` |
+| Save your current draft when you want to find it here. | 11 | Instruction |
 | Record shape, movement, habitat, and sound before opening another guide. | 10 | Pass |
 | Add at least two candidates when possible. | 7 | Pass |
 | Note one fit and one contradiction for each. | 8 | Pass |
@@ -34,22 +46,75 @@ Every visitor-facing sentence or sentence-like instruction on the landing applic
 | Confirm the caller was likely the bird you saw. | 9 | Pass |
 | “Unresolved” is a useful result. | 5 | Pass |
 | Only use “verified” when independent evidence supports the identification. | 9 | Pass |
-| It records notes and does not identify birds or download recordings. | 10 | Listed claim: `no-automatic-identification` / `no-audio-fetch` |
-| Cards are stored in this browser. | 6 | Listed claim: `stored-card-schema` |
-| Export a backup before clearing browser storage or changing phones. | 9 | Pass |
+| It records notes and does not identify birds or download recordings. | 11 | `no-automatic-identification`, `no-audio-fetch` |
+| Cards are stored in this browser. | 6 | `stored-card-schema` |
+| Export a backup before clearing browser storage or changing phones. | 10 | Instruction |
 | A private evidence card for uncertain bird sightings. | 8 | Pass |
-| Field-console artwork generated for this product. | 6 | Listed claim: `generated-artwork` |
+| Field-console artwork generated for this product. | 6 | `generated-artwork` |
 
-## Headings and action labels
+## Privacy and terms
 
-`Your current evidence card`, `Saved evidence cards`, `Check an uncertain bird in four steps`, and `Choose the identification status` stand alone. Location changes use links: `Edit evidence card`, `View saved cards`, and `Read the evidence guide`. Actions name their result: `Try it with sample data`, `Save evidence card`, `Export CSV`, `Export Markdown`, `Export backup`, `Import backup`, `Start a new card`, `Reset demo`, and `Start a blank card`.
+| Copy | Words | Result |
+| --- | ---: | --- |
+| Your evidence cards stay on this device. | 7 | `device-only` |
+| Cards are stored in this browser. | 6 | `stored-card-schema` |
+| You do not need an account. | 6 | `no-account` |
+| Cards store your entries, a card number, local timestamps, and review status in this browser. | 15 | `stored-card-schema` |
+| Entries can include notes, locality, optional coordinates, candidates, and reference links. | 11 | `stored-card-schema` |
+| New cards start with locality-only exports. | 6 | `private-coordinates` |
+| Coordinates are exported only after you choose Precise and enter both values. | 12 | `private-coordinates` |
+| No analytics, ads, remote fonts, or recording links are loaded. | 10 | `no-tracking-or-remote-assets` |
+| Download one card for a spreadsheet or as shareable text. | 10 | `exports`; formats explained |
+| Download a backup of all saved cards. | 7 | `exports` |
+| Delete any card from Saved evidence cards. | 7 | `delete-card` |
+| The app stores each reference link as text and does not fetch it. | 13 | `no-audio-fetch` |
+| Use evidence cards as notes, not verdicts. | 7 | Pass |
+| You decide what to log, share, or submit. | 9 | Pass |
+| This tool records the notes you enter; it does not identify birds. | 12 | `no-automatic-identification` |
+| Do not record or share sensitive nest locations. | 8 | Pass |
+| Check licence terms before adding a recording link. | 8 | Pass |
+| Review any export before sharing it. | 6 | Pass |
+| Check records against your own observations and the rules of any service you later use. | 15 | Pass |
+| Keep a backup before clearing browser storage or changing devices. | 10 | Instruction |
+| The app is provided as a free local tool. | 9 | `free`, `device-only` |
+| Browser storage and offline support depend on your browser and device settings. | 12 | Limitation |
 
-## Terminology
+## README
+
+| Copy | Words | Result |
+| --- | ---: | --- |
+| Record bird evidence before you log an uncertain sighting. | 9 | `record-evidence-card` |
+| For birders checking an app suggestion against what they saw and heard. | 12 | Pass |
+| It records notes and does not identify birds. | 8 | `no-automatic-identification` |
+| Try the sample bird sighting at bird-id-evidence-card.sociobot.in/demo. | 7 | Pass |
+| Keeps observed notes separate from candidate suggestions. | 7 | `separate-observation-and-suggestion` |
+| Records locality, visual notes, call notes, candidates, and an unresolved decision. | 11 | `record-evidence-card` |
+| Export one card as CSV or Markdown, and saved cards as a JSON backup. | 14 | `exports`; followed by explanations |
+| CSV opens in a spreadsheet. | 5 | Explains format |
+| Markdown is shareable text. | 4 | Explains format |
+| A backup moves all cards to another browser. | 8 | `exports` |
+| Works offline after the first visit. | 6 | `offline-demo` |
+| Stays on this device. | 5 | `device-only` |
+| Stores reference links as text and does not fetch them. | 10 | `no-audio-fetch` |
+| New cards start with locality-only exports. | 6 | `private-coordinates` |
+| Coordinates export only after you choose Precise and enter two valid values. | 12 | `private-coordinates` |
+| Review sensitive wildlife locations before sharing an export. | 8 | Pass |
+| Open the local address shown after the development server starts. | 9 | Developer instruction |
+| Open `/demo` to use sample data that stays separate from your cards. | 12 | `demo-isolation` |
+| Automated product checks and their commands are listed in `.factory/claims.json`. | 10 | Developer documentation |
+| Use evidence cards as notes, not verdicts. | 7 | Pass |
+
+## Headings, actions, and terminology
+
+Route headings stand alone: `Record bird evidence before you log.`, `Your current evidence card`, `Saved evidence cards`, and `Check an uncertain bird in four steps`.
+
+Actions name their result: `Try it with sample data`, `Save evidence card`, `Export Markdown`, `Export CSV`, `Export backup`, `Import backup`, `Start a new card`, `Reset demo`, `Start a blank card`, `Open card`, `Delete`, and `Keep card`.
 
 | Concept | One term |
 | --- | --- |
 | Saved item | evidence card |
-| Try-out data | sample data |
+| Try-out content | sample data |
 | Candidate from an app or person | suggestion |
 | Browser persistence | this browser |
-| Location detail | locality-only |
+| Coarse location | locality-only |
+| Move all saved cards | backup |

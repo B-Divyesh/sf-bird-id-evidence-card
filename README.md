@@ -11,11 +11,13 @@ Try the sample bird sighting at [bird-id-evidence-card.sociobot.in/demo](https:/
 - Keeps observed notes separate from candidate suggestions.
 - Records locality, visual notes, call notes, candidates, and an unresolved decision.
 - Export one card as CSV or Markdown, and saved cards as a JSON backup.
+  CSV opens in a spreadsheet. Markdown is shareable text. A backup moves all cards to another browser.
 - Works offline after the first visit.
 - Stays on this device.
 - Stores reference links as text and does not fetch them.
 
-Locality-only exports exclude coordinates. Review sensitive wildlife locations before sharing an export.
+New cards start with locality-only exports. Coordinates export only after you choose Precise and enter two valid values.
+Review sensitive wildlife locations before sharing an export.
 
 ## Run locally
 

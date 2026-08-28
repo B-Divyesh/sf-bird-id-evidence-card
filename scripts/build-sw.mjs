@@ -65,6 +65,9 @@ self.addEventListener('fetch', (event) => {
         const cache = await caches.open(CACHE_NAME);
         if (url.pathname.startsWith('/privacy')) return (await cache.match('/privacy/index.html')) || (await cache.match('/offline.html'));
         if (url.pathname.startsWith('/terms')) return (await cache.match('/terms/index.html')) || (await cache.match('/offline.html'));
+        if (url.pathname.startsWith('/demo')) return (await cache.match('/demo/index.html')) || (await cache.match('/index.html')) || (await cache.match('/offline.html'));
+        if (url.pathname.startsWith('/records')) return (await cache.match('/records/index.html')) || (await cache.match('/index.html')) || (await cache.match('/offline.html'));
+        if (url.pathname.startsWith('/guide')) return (await cache.match('/guide/index.html')) || (await cache.match('/index.html')) || (await cache.match('/offline.html'));
         return (await cache.match('/index.html')) || (await cache.match('/offline.html'));
       }
     })());

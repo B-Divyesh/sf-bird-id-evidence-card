@@ -39,25 +39,32 @@ const toastAction = byId<HTMLButtonElement>('toast-action');
 const confirmDialog = byId<HTMLDialogElement>('confirm-dialog');
 const dialogMessage = byId('dialog-message');
 
+document.querySelector<HTMLAnchorElement>('.skip-link')?.addEventListener('click', (event) => {
+  event.preventDefault();
+  byId('main').focus();
+  byId('main').scrollIntoView();
+});
+
 let current = createBlankCard();
 let cards: EvidenceCard[] = [];
 let autosaveTimer: number | undefined;
 let toastTimer: number | undefined;
 let storageHealthy = true;
 const isDemo = (): boolean => location.pathname === '/demo' || new URLSearchParams(location.search).get('demo') === '1';
-const pathToView = (): 'workbench' | 'records' | 'guide' => location.pathname === '/records' ? 'records' : location.pathname === '/guide' ? 'guide' : 'workbench';
-const viewPath: Record<'workbench' | 'records' | 'guide', string> = { workbench: '/', records: '/records', guide: '/guide' };
-const routeTitle: Record<'workbench' | 'records' | 'guide', string> = {
+type ViewName = 'workbench' | 'records' | 'guide';
+const pathToView = (): ViewName => location.pathname === '/records' ? 'records' : location.pathname === '/guide' ? 'guide' : 'workbench';
+const viewPath: Record<ViewName, string> = { workbench: '/', records: '/records', guide: '/guide' };
+const routeTitle: Record<ViewName, string> = {
   workbench: 'Bird ID Evidence Card — record uncertain sightings',
   records: 'Saved cards — Bird ID Evidence Card',
   guide: 'Evidence guide — Bird ID Evidence Card'
 };
-const routeMetadata: Record<'workbench' | 'records' | 'guide', { description: string; path: string }> = {
+const routeMetadata: Record<ViewName, { description: string; path: string }> = {
   workbench: { description: 'Record what you saw and heard before you log an uncertain bird sighting.', path: '/' },
   records: { description: 'Open, export, import, or delete bird evidence cards stored in this browser.', path: '/records' },
   guide: { description: 'Check an uncertain bird sighting by recording observations, alternatives, and reference notes.', path: '/guide' }
 };
-const setMetadata = (view: 'workbench' | 'records' | 'guide'): void => {
+const setMetadata = (view: ViewName): void => {
   const demo = isDemo();
   const title = demo ? 'Demo — Bird ID Evidence Card' : routeTitle[view];
   const details = demo
@@ -77,6 +84,25 @@ const setMetadata = (view: 'workbench' | 'records' | 'guide'): void => {
   write('meta[property="og:description"]', details.description);
   write('meta[name="twitter:title"]', title);
   write('meta[name="twitter:description"]', details.description);
+};
+
+const setHeadingLevel = (id: string, level: 1 | 2): HTMLElement => {
+  const heading = byId(id);
+  if (heading.tagName === `H${level}`) return heading;
+  const replacement = document.createElement(`h${level}`);
+  for (const attribute of Array.from(heading.attributes)) replacement.setAttribute(attribute.name, attribute.value);
+  replacement.innerHTML = heading.innerHTML;
+  heading.replaceWith(replacement);
+  return replacement;
+};
+
+const setRouteHeading = (view: ViewName): HTMLElement => {
+  const selectedId = view === 'workbench' && !isDemo() ? 'home-title' : `${view}-title`;
+  for (const id of ['home-title', 'workbench-title', 'records-title', 'guide-title']) setHeadingLevel(id, 2);
+  for (const id of ['context-title', 'look-title', 'listen-title', 'candidate-title', 'reference-title', 'decision-title', 'readout-title']) {
+    setHeadingLevel(id, isDemo() ? 2 : 3);
+  }
+  return setHeadingLevel(selectedId, 1);
 };
 
 const escapeHtml = (value: string): string => value.replace(/[&<>'"]/g, (character) => ({
@@ -306,10 +332,12 @@ const isMeaningfulDraft = (card: EvidenceCard): boolean => Boolean(
 );
 
 const switchView = (name: string, push = true, moveFocus = true): void => {
-  const viewName = ['workbench', 'records', 'guide'].includes(name) ? name : 'workbench';
+  const viewName = (['workbench', 'records', 'guide'].includes(name) ? name : 'workbench') as ViewName;
   document.querySelectorAll<HTMLElement>('.app-view').forEach((item) => { item.hidden = item.id !== `view-${viewName}`; });
   document.querySelectorAll<HTMLAnchorElement>('.nav-button').forEach((item) => {
-    const active = item.getAttribute('href') === viewPath[viewName as keyof typeof viewPath];
+    const active = isDemo()
+      ? item.hasAttribute('data-demo-link')
+      : !item.hasAttribute('data-demo-link') && new URL(item.href).pathname === viewPath[viewName];
     item.classList.toggle('is-active', active);
     if (active) item.setAttribute('aria-current', 'page'); else item.removeAttribute('aria-current');
   });
@@ -317,8 +345,9 @@ const switchView = (name: string, push = true, moveFocus = true): void => {
   if (push && !isDemo()) history.pushState({ view: viewName }, '', viewPath[viewName as keyof typeof viewPath]);
   document.body.classList.remove('route-workbench', 'route-records', 'route-guide');
   document.body.classList.add(`route-${viewName}`);
-  setMetadata(viewName as keyof typeof routeTitle);
-  const heading = byId(`view-${viewName}`).querySelector<HTMLElement>('h1');
+  document.body.dataset.routeShell = isDemo() ? 'demo' : viewName === 'workbench' ? 'home' : viewName;
+  setMetadata(viewName);
+  const heading = setRouteHeading(viewName);
   if (moveFocus) {
     window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     window.setTimeout(() => heading?.focus(), 0);
@@ -334,7 +363,6 @@ const renderRecords = async (): Promise<void> => {
     storageHealthy = false;
     console.error(error);
   }
-  byId('record-count').textContent = String(cards.length);
   byId('records-empty').hidden = cards.length > 0;
   const list = byId('records-list');
   list.hidden = cards.length === 0;
@@ -416,7 +444,6 @@ form.addEventListener('submit', async (event) => {
     else current = await saveNewCard(current);
     await saveDraft(current);
     cards = await getCards();
-    byId('record-count').textContent = String(cards.length);
     renderPreview();
     setSaveState(`Filed locally · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
     showToast(isComplete(current) ? 'Complete evidence card saved locally.' : 'Draft card saved. The readiness list shows what is still missing.');
@@ -445,7 +472,9 @@ byId('new-card').addEventListener('click', async () => {
 document.addEventListener('click', (event) => {
   const link = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[href]');
   if (!link || link.target || link.origin !== location.origin || link.hasAttribute('data-demo-link')) return;
-  const route = new URL(link.href).pathname;
+  const target = new URL(link.href);
+  if (target.hash && target.pathname === location.pathname && target.search === location.search) return;
+  const route = target.pathname;
   if (!['/', '/records', '/guide'].includes(route)) return;
   event.preventDefault();
   switchView(route === '/records' ? 'records' : route === '/guide' ? 'guide' : 'workbench');
@@ -539,7 +568,6 @@ byId('reset-demo').addEventListener('click', async () => {
   await saveDraft(current);
   cards = [current];
   populateForm();
-  byId('record-count').textContent = '1';
   showToast('Sample evidence card reset.');
 });
 
@@ -575,7 +603,6 @@ const initialize = async (): Promise<void> => {
     console.error(error);
     setSaveState('Storage unavailable — export your work', 'error');
   }
-  byId('record-count').textContent = String(cards.length);
   populateForm();
   switchView(pathToView(), false, false);
   void registerServiceWorker();

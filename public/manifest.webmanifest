@@ -3,7 +3,7 @@
   "short_name": "Bird Evidence",
   "description": "Compare observed bird evidence with tentative suggestions before you log.",
   "id": "/",
-  "start_url": "/?source=pwa&v=1",
+  "start_url": "/?source=pwa&v=3",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
