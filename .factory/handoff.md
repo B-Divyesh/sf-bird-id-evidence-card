@@ -44,5 +44,6 @@ Deployed on 2026-08-28 using `/opt/fleet/lib/deploy-static.sh bird-id-evidence-c
 - The live manifest is `application/json`; hashed JavaScript is `Cache-Control: public, max-age=31536000, immutable`; `sw.js` is `no-cache`.
 - `verify-url.sh` returned HTTPS 200, 657 ms load, no console/page errors, title/lang/one h1/main/alt/button-label checks all passed, and rendered desktop plus 390 px screenshots.
 - A live 390 px dark-browser run reported zero axe violations, only same-origin requests, 44 px targets, service-worker control, offline reload, and successful offline locality editing.
+- Live Lighthouse 13 report scores were Performance 100, Accessibility 100, Best Practices 100, and SEO 100 (FCP 1.1 s, LCP 1.2 s, TBT 50 ms, CLS 0). The CLI reported a Chromium tab crash while collecting its final screenshot after the audits had completed; the emitted report contains the listed scores.
 
 No known product gaps remain from verifier report `f18b6e83572b1d206c773d351306350d95ba23c7`.
