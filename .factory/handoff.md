@@ -1,8 +1,8 @@
 # Bird ID Evidence Card — repair handoff
 
-## Status: ready for deployment
+## Status: deployed and verified
 
-This repair replaces the failed candidate `ac491c75725fb2cdb35c97c229a6aedfa59f4ff0` identified in the independent verifier report. Product repair commit: `afdb8633d11cb63ec03b271720cfccf80bbe6727` (`fix: resolve verification release blockers`). The artifact remains a Vite + TypeScript, static-deployed, local-first PWA; `npm run build` writes `dist/index.html` at its root.
+This repair replaces the failed candidate `ac491c75725fb2cdb35c97c229a6aedfa59f4ff0` identified in the independent verifier report. Product repair commits are `afdb8633d11cb63ec03b271720cfccf80bbe6727` and `6e054fb` (`fix: keep host config out of PWA precache`). The artifact remains a Vite + TypeScript, static-deployed, local-first PWA; `npm run build` writes `dist/index.html` at its root.
 
 ## Repairs made
 
@@ -11,6 +11,7 @@ This repair replaces the failed candidate `ac491c75725fb2cdb35c97c229a6aedfa59f4
 - **Mobile targets:** the header wordmark and footer links have explicit 44 × 44 CSS-pixel minimum targets at the 390 px breakpoint.
 - **Landmarks and recovery:** the nested preview `aside` is now a labelled non-landmark container, eliminating axe’s nested-complementary result. Malformed backup recovery remains safe and visible without emitting an expected `console.error`.
 - **Regression coverage:** unit coverage verifies retained high-water allocation. Playwright now tests dark axe with no violations, actual save/delete/save allocation in IndexedDB, 390 px target dimensions, and malformed-backup console cleanliness. Typecheck/lint commands are exposed in `package.json`.
+- **Production PWA install:** Azure consumes but does not serve `staticwebapp.config.json`; the generated worker now excludes this host-only file. A post-build check fails if it ever returns to the app-shell list, preventing a production-only offline-install failure.
 
 ## Verification evidence
 
@@ -37,6 +38,11 @@ Privacy checks remain local-first by design: IndexedDB is the only application s
 
 ## Deployment and follow-up
 
-Deploy `dist/` using `/opt/fleet/lib/deploy-static.sh bird-id-evidence-card dist`, then verify the deployed response identity against this final build and repeat the live 390 px offline reload.
+Deployed on 2026-08-28 using `/opt/fleet/lib/deploy-static.sh bird-id-evidence-card dist` to <https://bird-id-evidence-card.sociobot.in> (Azure Static Web Apps deployment `877d7b50-ad8b-41d3-b327-eeeae298a91b`). Live evidence:
+
+- The deployed and local `index.html` SHA-256 are both `00a2a248d9c758bb50b1e989253dd1b5bd6b24c2aa48f39c71cba990cc5ebdaf`.
+- The live manifest is `application/json`; hashed JavaScript is `Cache-Control: public, max-age=31536000, immutable`; `sw.js` is `no-cache`.
+- `verify-url.sh` returned HTTPS 200, 657 ms load, no console/page errors, title/lang/one h1/main/alt/button-label checks all passed, and rendered desktop plus 390 px screenshots.
+- A live 390 px dark-browser run reported zero axe violations, only same-origin requests, 44 px targets, service-worker control, offline reload, and successful offline locality editing.
 
 No known product gaps remain from verifier report `f18b6e83572b1d206c773d351306350d95ba23c7`.
