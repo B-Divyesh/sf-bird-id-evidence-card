@@ -90,6 +90,7 @@ test('@claim:no-audio-fetch does not request the sample reference URL', async ({
 
 test('first phone screen states the job, audience, action, and outcome', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium', 'Phone viewport check.');
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
   for (const text of [
     'Record bird evidence before you log.',
