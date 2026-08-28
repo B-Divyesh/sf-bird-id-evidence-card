@@ -1,30 +1,26 @@
-# Bird ID Evidence Card — independent verification handoff
+# Bird ID Evidence Card — review 1 handoff
 
-## Status: PASS
+## Status: FAIL
 
-Candidate `cce7d86f3c24405c267b365578e58af3e382f396` was independently verified on 2026-08-28 from a clean checkout and against <https://bird-id-evidence-card.sociobot.in>. The live site matches the candidate. No critical, high, medium, or low acceptance defects remain.
+Completed the requested adversarial first-read review without modifying product code. The full review is in [`.factory/review-1.md`](review-1.md).
 
-The complete evidence is in [`.factory/verification-2.md`](verification-2.md). The older [`.factory/verification.md`](verification.md) is the failed report for superseded candidate `ac491c7…`, not this release.
+## What was verified
 
-## Verification summary
+- Fresh live Chromium contexts at 390 × 844 and 1280 × 900, including the pre-scroll phone screen.
+- `/demo`, `/?demo=1`, Privacy, Terms, a non-existent route, root links, title/metadata, and normal offline/same-origin behavior.
+- A clean local clone at `/tmp/bird-review-Z7Pe7i`: `npm ci` and `npm test` passed; its final Playwright status was `passed`.
 
-```sh
-npm ci
-npm run typecheck
-npm run lint
-npm audit --audit-level=low
-npm test
-npm run build
-```
+## Release blockers
 
-All commands passed. `npm test` completed 6 unit tests and 15 applicable Playwright project runs; the exact build produced `dist/`, 25,401 bytes of JavaScript and 21,735 bytes of CSS raw.
+1. The first screen has no plain job statement, named audience, or primary first action.
+2. No isolated sample-data demo exists; `/demo` and `?demo=1` open the ordinary empty workspace.
+3. `.factory/claims.json` and `@claim:` sandbox tests are absent while public claims remain on the landing page and README.
+4. Meaningful product destinations are fragment-only and a nonexistent URL returns the normal app with HTTP 200 rather than a designed 404.
 
-Independent browser QA covered normal uncertain-sighting capture, invalid required fields/URLs/coordinates, coordinate privacy, Markdown/CSV/JSON export and import, hostile/malformed imports, candidate limits, delete cancellation, refresh persistence, simultaneous-tab identifier allocation, keyboard focus, dark/light axe scans, 390 px targets, reduced motion, offline app/legal reloads, and a real service-worker update. Normal local and live paths produced no console/page errors or third-party requests.
+## Left intentionally unchanged
 
-All 19 deterministic live files match the candidate build byte-for-byte; `index.html` SHA-256 is `00a2a248d9c758bb50b1e989253dd1b5bd6b24c2aa48f39c71cba990cc5ebdaf`. Fresh live Lighthouse scores: Performance 99, Accessibility 100, Best Practices 100, SEO 100; LCP 1.13 s, TBT 142 ms, CLS 0.
+Only this handoff and `.factory/review-1.md` were added. No product, test, deployment, or configuration files were changed.
 
-## Known gaps and next steps
+## Next verification
 
-No release-blocking or acceptance-level product gaps were found. Optional defense-in-depth follow-up is to add CSP, Permissions Policy, and explicit anti-framing headers; the current deployment already sends HSTS, `nosniff`, and a strict-origin referrer policy.
-
-No product code was modified. This handoff and `.factory/verification-2.md` are the only intended verification changes.
+After the blockers are repaired, run the demo entry point from a fresh browser context, execute every command in the new `.factory/claims.json`, confirm demo storage does not affect real storage, then rerun `npm test` and the live first-read review.
