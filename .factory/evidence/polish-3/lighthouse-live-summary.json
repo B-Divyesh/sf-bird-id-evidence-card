@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-08-28T12:34:51.663Z",
+  "url": "https://bird-id-evidence-card.sociobot.in/",
+  "lighthouse": "13.4.1",
+  "performance": 100,
+  "accessibility": 100,
+  "bestPractices": 100,
+  "seo": 100,
+  "fcpMs": 907.299,
+  "lcpMs": 1132.299,
+  "tbtMs": 0,
+  "cls": 0,
+  "speedIndexMs": 907.299
+}

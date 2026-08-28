@@ -1,0 +1,43 @@
+{
+  "verifiedAt": "2026-08-28",
+  "implementationCommit": "5c8e7226807b91ba3f2807677080583605a018a1",
+  "cleanClone": "/tmp/bird-polish3-final.mukzQg",
+  "install": "npm ci: passed; npm audit: 0 vulnerabilities",
+  "typecheck": "passed",
+  "lint": "passed",
+  "unit": "9 passed",
+  "browser": "43 passed, 1 intentional viewport skip across mobile and desktop Chromium",
+  "build": {
+    "status": "passed",
+    "javascriptGzipBytes": 10624,
+    "cssGzipBytes": 5743,
+    "mobileHeroBytes": 14501
+  },
+  "claimCommands": {
+    "status": "15 of 15 passed independently",
+    "ids": [
+      "record-evidence-card",
+      "separate-observation-and-suggestion",
+      "no-automatic-identification",
+      "offline-demo",
+      "device-only",
+      "free",
+      "no-account",
+      "demo-isolation",
+      "exports",
+      "private-coordinates",
+      "no-audio-fetch",
+      "delete-card",
+      "stored-card-schema",
+      "no-tracking-or-remote-assets",
+      "generated-artwork"
+    ]
+  },
+  "live": {
+    "url": "https://bird-id-evidence-card.sociobot.in/",
+    "deploymentId": "31bd70d3-883b-4089-a176-02e117b95973",
+    "audit": "passed",
+    "verifyUrl": "passed",
+    "lighthouse": "100 performance / 100 accessibility / 100 best practices / 100 SEO"
+  }
+}

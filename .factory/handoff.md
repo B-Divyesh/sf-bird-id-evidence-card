@@ -1,17 +1,67 @@
-# Review 3 handoff
+# Polish 3 handoff
 
-## Completed
+## Outcome
 
-- Performed the requested adversarial first-read review without modifying product code.
-- Wrote `.factory/review-3.md` with the full copy audit, live demo/offline/privacy checks, clean-clone claim results, prior-finding verification, and structure review.
+Perfection-loop round 3 is complete. Every finding in reviews 1–3 is mapped in `.factory/polish-3.md`, implemented, tested, deployed, and rechecked on the public domain. No finding is deferred.
+
+The shipped product remains a static, offline-first PWA with its field-naturalist instrument-panel identity intact.
+
+## What changed
+
+- Rewrote the first screen around the exact user job, audience, one-click sample action, outcome, and three short facts.
+- Added a realistic `/demo` and `?demo=1` flow backed only by `demo:bird-id-evidence-card`, with a persistent banner, reset, and blank-card exit.
+- Added 15 registered claims with one unique observable `@claim:<id>` test each.
+- Added route-specific static documents, metadata, titles, canonical URLs, social metadata, focus/announcement behavior, and a true styled HTTP 404.
+- Unified header/footer navigation and build `v1.0.3` across app, demo, legal, and 404 pages.
+- Narrowed privacy/audio wording to tested behavior and added tests for accounts, coordinates, deletion, storage schema, network privacy, and exports.
+- Explained CSV, Markdown, and backup outcomes in plain words.
+- Corrected the populated Saved cards outline so its item headings follow the page `<h1>`.
+- Added stable sharded browser execution and a reproducible cold-live verifier.
+- Updated the catalog line to: `Record what you saw and heard before logging an uncertain bird sighting.`
 
 ## Verification
 
-- Clean clone: `/tmp/bird-review-3.3ClPNY`; `npm ci` completed successfully.
-- All 13 exact commands listed in `.factory/claims.json` passed independently from that clone.
-- Live mobile and desktop cold first-read checks passed. Live demo isolation, reset, offline reload, and same-origin-only request checks passed.
-- Focused route/accessibility/legal suite passed 6/6. `scripts/verify-url.sh` passed against the live root.
+Implementation commit tested: `5c8e7226807b91ba3f2807677080583605a018a1`.
+
+Clean clone: `/tmp/bird-polish3-final.mukzQg`.
+
+- `npm ci`: passed.
+- `npm audit --audit-level=high`: 0 vulnerabilities.
+- `npm run typecheck`: passed.
+- `npm run lint`: passed.
+- Every exact command in `.factory/claims.json`: 15/15 passed independently (`ALL_CLAIMS_PASS=15`).
+- `npm test`: 9/9 unit tests passed; production build verification passed; browser suite passed 43 tests across phone and desktop. One desktop instance of the phone-only first-viewport test was intentionally skipped.
+- `npm run build`: passed and created `dist/index.html`.
+- Build budgets: JavaScript 10,624 bytes gzip; CSS 5,743 bytes gzip; mobile hero 14,501 bytes.
+
+Evidence summary: `.factory/evidence/polish-3/verification-summary.json`.
+
+## Deployment and live checks
+
+- Public URL: <https://bird-id-evidence-card.sociobot.in/>
+- Azure Static Web Apps deployment: `31bd70d3-883b-4089-a176-02e117b95973`.
+- `verify-url.sh`: 200 response, correct title/lang, one `<h1>`, `<main>`, all image alt text, no unlabeled buttons, no console errors.
+- `npm run test:live -- https://bird-id-evidence-card.sociobot.in .factory/evidence/polish-3/live`: passed after the final deployment.
+- Cold live audit covered six 200 routes, a real unknown-route 404, raw/rendered heading counts, metadata, common chrome, focus, 390px layout, 44px targets, axe, console errors, same-origin traffic, cookies/localStorage, demo reset/isolation, and offline demo/legal reloads.
+- Live Lighthouse 13.4.1: performance 100, accessibility 100, best practices 100, SEO 100; FCP 907 ms, LCP 1,132 ms, TBT 0 ms, CLS 0.
+- Screenshots: `.factory/evidence/polish-3/live/home-mobile.png`, `demo-mobile.png`, `screenshot-mobile.png`, and `screenshot-desktop.png`.
+- Machine-readable results: `.factory/evidence/polish-3/live/live-audit.json`, `live/verify.json`, and `lighthouse-live-summary.json`.
+
+## Run and verify
+
+```sh
+npm ci
+npm test
+npm run build
+npm run test:live -- https://bird-id-evidence-card.sociobot.in .factory/evidence/polish-3/live
+```
+
+Deploy with:
+
+```sh
+/opt/fleet/lib/deploy-static.sh bird-id-evidence-card dist
+```
 
 ## Known gaps
 
-- Review verdict is **FAIL**. See `.factory/review-3.md` for blocking findings: four static `<h1>` elements per app route; unlisted/under-proved privacy and audio claims; and inconsistent app/legal navigation plus build IDs. A minor export-format jargon finding also remains.
+None.
