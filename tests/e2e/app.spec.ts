@@ -418,7 +418,7 @@ test('the installed app shell opens demo and legal routes offline', async ({ pag
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
   }
-  const fallbackResponse = await page.goto('/offline.html', { waitUntil: 'domcontentloaded' });
+  const fallbackResponse = await page.goto('/a-page-that-was-never-saved', { waitUntil: 'domcontentloaded' });
   expect(fallbackResponse?.fromServiceWorker()).toBeTruthy();
   await expect(page).toHaveTitle('Offline — Bird ID Evidence Card');
   await expect(page.getByRole('heading', { level: 1, name: 'That page is not available offline.' })).toBeVisible();

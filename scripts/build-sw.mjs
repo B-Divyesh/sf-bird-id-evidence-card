@@ -56,13 +56,8 @@ self.addEventListener('fetch', (event) => {
 
   if (request.mode === 'navigate') {
     event.respondWith((async () => {
-      try {
-        const response = await fetch(request);
-        const cache = await caches.open(CACHE_NAME);
-        cache.put(request, response.clone());
-        return response;
-      } catch {
-        const cache = await caches.open(CACHE_NAME);
+      const cache = await caches.open(CACHE_NAME);
+      const offlineNavigation = async () => {
         if (url.pathname.startsWith('/privacy')) return (await cache.match('/privacy/index.html')) || (await cache.match('/offline.html'));
         if (url.pathname.startsWith('/terms')) return (await cache.match('/terms/index.html')) || (await cache.match('/offline.html'));
         if (url.pathname.startsWith('/demo')) return (await cache.match('/demo/index.html')) || (await cache.match('/index.html')) || (await cache.match('/offline.html'));
@@ -70,6 +65,14 @@ self.addEventListener('fetch', (event) => {
         if (url.pathname.startsWith('/guide')) return (await cache.match('/guide/index.html')) || (await cache.match('/index.html')) || (await cache.match('/offline.html'));
         if (url.pathname === '/') return (await cache.match('/index.html')) || (await cache.match('/offline.html'));
         return (await cache.match('/offline.html')) || new Response('This page is not available offline.', { status: 503, headers: { 'Content-Type': 'text/plain' } });
+      };
+      if (self.navigator.onLine === false) return offlineNavigation();
+      try {
+        const response = await fetch(request);
+        cache.put(request, response.clone());
+        return response;
+      } catch {
+        return offlineNavigation();
       }
     })());
     return;
