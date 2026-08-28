@@ -38,3 +38,9 @@ Final implementation commit tested from a clean clone: `5c8e7226807b91ba3f280767
 - Live Lighthouse: 100 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 1,132 ms; TBT 0 ms; CLS 0. See [summary](evidence/polish-3/lighthouse-live-summary.json).
 
 There are no deferred findings or known acceptance gaps.
+
+## Infrastructure retry evidence
+
+The controller's later Chromium `SIGSEGV` was retried on a fresh worker for work order `bird-id-evidence-card-polish-3-infra-retry`. A clean clone at `4d9e6eb510220fdd6b2f5a231b866c547c84944d` passed all 15 exact claim commands independently and the complete four-shard browser suite. The suite finished with 43 passes and the one documented phone-only check skipped on desktop. The multi-context export/import claim passed in both projects. Chromium did not crash.
+
+The same clean clone passed type checking, lint, 9 unit tests, build verification, Playwright axe on every public route, network/privacy checks, demo isolation, offline route checks, and an independent URL verifier with no console errors. Local mobile Lighthouse 13.4.1 scored 100 in performance, accessibility, best practices, and SEO. Machine-readable evidence is in [infra-retry-summary.json](evidence/polish-3/infra-retry-summary.json). Post-deployment checks are recorded in the live evidence files and handoff.

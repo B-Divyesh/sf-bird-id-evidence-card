@@ -1,0 +1,38 @@
+{
+  "workOrder": "bird-id-evidence-card-polish-3-infra-retry",
+  "checkedAt": "2026-08-28T13:27:50Z",
+  "sourceCommit": "4d9e6eb510220fdd6b2f5a231b866c547c84944d",
+  "cleanClone": "/tmp/bird-polish3-infra-retry.HKek2t/repo",
+  "runtime": {
+    "node": "v22.23.2",
+    "npm": "10.9.8",
+    "playwright": "1.58.2",
+    "browserPath": "/opt/pw-browsers"
+  },
+  "checks": {
+    "npmAuditHigh": "0 vulnerabilities",
+    "typecheck": "passed",
+    "lint": "passed",
+    "claimCommands": "15/15 passed independently",
+    "unit": "9/9 passed",
+    "browser": "43 passed; 1 intentional desktop skip for the phone-only first-screen test",
+    "build": "passed; dist/index.html created",
+    "budgets": "JavaScript 10,624 B gzip; CSS 5,743 B gzip; mobile hero 14,501 B",
+    "urlVerifier": "passed; no console errors; one h1; one main; all images have alt text; all buttons are labelled",
+    "accessibility": "Playwright axe returned zero violations on every public route in phone and desktop projects",
+    "privacy": "same-origin-only requests; no cookies or localStorage; demo sentinel isolation passed",
+    "offline": "demo, privacy, and terms reopened under context.setOffline(true)",
+    "chromiumCrash": "not reproduced across all claim runs, four full-suite shards, and independent URL/Lighthouse runs"
+  },
+  "localLighthouse": {
+    "version": "13.4.1",
+    "performance": 100,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "fcpMs": 998,
+    "lcpMs": 1359,
+    "tbtMs": 51,
+    "cls": 0
+  }
+}
