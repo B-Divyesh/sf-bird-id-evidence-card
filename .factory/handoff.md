@@ -1,50 +1,42 @@
-# Bird ID Evidence Card — handoff
+# Bird ID Evidence Card — verifier handoff
 
-## Shipped
+## Verification status: FAIL
 
-- A complete Vite + vanilla TypeScript PWA at `dist/`, designed as a product-specific mid-century field instrument.
-- Six-part evidence workflow: context and privacy, visual evidence, audio evidence, candidates, lawful reference links, and decision trail.
-- Observations and app/guide suggestions are visually and semantically separated. Confidence belongs to the birder; the tool makes no species claim.
-- Local IndexedDB autosave, saved-card archive, reopen/edit, named delete confirmation, and clear empty/error/offline states.
-- Markdown and CSV per-card exports plus versioned JSON archive export/import. Private and approximate modes always strip coordinates from exports.
-- Install manifest, 192/512/maskable original icons, generated/versioned service worker, app-shell precache, cache cleanup, offline navigation, and update toast.
-- Responsive 390 px layout, keyboard path, designed focus states, native accessible form controls/dialog, reduced-motion treatment, automatic dark palette, and print-friendly evidence readout.
-- Static `/privacy/` and `/terms/` pages; no accounts, analytics, runtime CDNs, remote fonts, third-party scripts, or media fetching.
-- Original factory-generated field-console illustration in AVIF/WebP/JPEG. Source, exact prompt, review, model, and date are recorded in `assets/src/` and `.factory/design.md`.
+Independent QA of candidate `ac491c75725fb2cdb35c97c229a6aedfa59f4ff0` against <https://bird-id-evidence-card.sociobot.in> completed on 28 August 2026. The live deployment matches the candidate, but the candidate does not satisfy the acceptance contract.
 
-## Run and deploy
+Release blocker: the dark theme has an axe **serious** contrast failure on the evidence-card footer status/privacy text and the site-footer product name. Each measures 1.07:1 instead of the required 4.5:1.
+
+Also reproduced:
+
+- Medium: deleting an earlier same-day card allows a later card to reuse an existing `BID-YYYYMMDD-NNN` number; two records were both assigned `BID-20260828-002`.
+- Low: the 390 px header wordmark is 40 px high and footer legal/navigation links are 19.6 px high, below the 44 px touch-target requirement.
+- Low: axe reports one moderate nested complementary-landmark issue.
+- Low/deployment: hashed assets use a 30-second revalidating cache rather than immutable caching; the manifest is served as `application/octet-stream` (Chromium nevertheless parses it without errors).
+- Low: malformed import is safely rejected but emits the caught exception as a console error.
+
+The full evidence, reproduction steps, response headers, hashes, workflows, and measurements are in [`.factory/verification.md`](verification.md).
+
+## What passed
+
+- Clean locked install; `npm test` (5 unit + 8 Playwright), `npx tsc --noEmit`, exact `npm run build`, and `npm audit --audit-level=low` all pass. No lint command exists.
+- The researched uncertain-identification workflow works end to end, including conflicting observations, multiple candidates, confidence, reference provenance, decision trail, local save/reopen, Markdown/CSV, and JSON backup/import.
+- Invalid required values, URL and coordinate validation, import recovery, deletion confirmation, candidate limit, empty state, and coordinate privacy were exercised.
+- IndexedDB persistence, installed service-worker update toast/reload, offline app/legal reload, and live 390 px offline editing pass.
+- Only same-origin requests occur; reference URLs are not fetched; no cookies, analytics, trackers, remote fonts/scripts, or application API traffic were observed.
+- Responsive layouts at 1280 px and 390 px have no horizontal overflow; keyboard skip/focus and reduced motion work.
+- Initial/normal loads have zero console or page errors. Light-theme axe has zero serious/critical findings.
+- Bundle budgets pass: 24,718-byte JS, 21,633-byte CSS, 14,501-byte mobile AVIF, no fonts, and 465,607-byte total `dist/`.
+- Lighthouse mobile: local and live are 100/100/100/100; live FCP 0.9 s, LCP 1.2 s, TBT 0 ms, CLS 0, 64 KiB transfer.
+- Deployment identity: 18 deterministic output files are byte-identical to the candidate; the service worker differs only by its generated cache timestamp.
+
+## Re-run
 
 ```sh
 npm ci
 npm test
+npx tsc --noEmit
+npm audit --audit-level=low
 npm run build
 ```
 
-Deployment is static. Publish `dist/`; `dist/index.html` is at its root. The exact build command is `npm run build`.
-
-## Verification — 28 August 2026
-
-- `npm test`: pass — 5 Vitest unit tests and 8 Playwright tests across Pixel 5 and desktop Chromium.
-- Browser paths covered: complete-card creation, IndexedDB persistence after reload, archive reopen, Markdown download, keyboard skip link, location-precision consent, and service-worker reload/edit while `context.setOffline(true)`.
-- Axe 4.10 automated scan: 0 serious or critical violations on mobile and desktop.
-- Browser console assertion: 0 console errors on initial production load.
-- `npx tsc --noEmit`: pass.
-- `npm audit`: 0 vulnerabilities.
-- `npm run build`: pass; generated 18-file precache and a 524 KB total `dist/` directory.
-- Initial compiled assets: 24.72 KB JavaScript (8.67 KB gzip), 21.63 KB CSS (5.44 KB gzip), 14.5 KB mobile AVIF hero. No font payload.
-- Lighthouse 13.4.1 mobile on the local production server: **Performance 100, Accessibility 100, Best Practices 100, SEO 100**.
-- Lighthouse lab metrics: FCP 0.9 s, LCP 1.5 s, TBT 0 ms, CLS 0; initial transfer reported as 71 KiB.
-- Visual review performed at desktop 1280 px and Pixel 5/393 CSS px. Content stacks intentionally, controls remain at least 44 px, and the live card moves below the editor on mobile.
-
-## Known gaps and intentional limits
-
-- No identification engine, hosted call library, external-service integration, or automatic licensing check; these are explicit product non-goals.
-- Data has no cloud sync. Browser/OS storage eviction is possible, so the product directs users to export JSON backups before clearing data or moving devices.
-- Automated browser coverage is Chromium only. Safari/iOS install and Firefox should receive hands-on device checks during the pilot.
-- The `verified` state remains a user-authored conclusion. The interface warns when it is chosen without a linked reference but does not block the user.
-
-## Suggested next steps
-
-1. Run the month-long pilot from the brief and measure complete-card rate plus changes in unqualified “certain” logs.
-2. Observe which fields birders skip; change readiness criteria only from that evidence.
-3. Add optional, user-authored export templates only after the base portability workflow proves useful.
+For acceptance, add a dark-color-scheme axe run to Playwright and reproduce the delete/save numbering sequence before rechecking the deployed replacement.
