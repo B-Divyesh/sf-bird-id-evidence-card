@@ -18,7 +18,8 @@ const routeHeadings = new Map([
   ['guide/index.html', 'Check an uncertain bird in four steps'],
   ['privacy/index.html', 'Your evidence cards stay on this device'],
   ['terms/index.html', 'Use evidence cards as notes, not verdicts'],
-  ['404.html', 'That evidence card page is not here']
+  ['404.html', 'That evidence card page is not here'],
+  ['offline.html', 'That page is not available offline']
 ]);
 
 let sharedHeader;
@@ -38,7 +39,11 @@ for (const [path, heading] of routeHeadings) {
   sharedFooter ??= footer;
   assert(header === sharedHeader, `${path} header drifted from the shared shell.`);
   assert(footer === sharedFooter, `${path} footer drifted from the shared shell.`);
-  assert(html.includes('Built by Param Factory · v1.0.3'), `${path} has the wrong build identifier.`);
+  assert(html.includes('Built by Param Factory · v1.0.4'), `${path} has the wrong build identifier.`);
+  if (path === 'offline.html') {
+    assert(!html.includes('<style'), 'offline.html must not use inline styles under the production CSP.');
+    assert(html.includes('href="/legal.css"'), 'offline.html must load its self-hosted stylesheet.');
+  }
 }
 
 const config = JSON.parse(await read('staticwebapp.config.json'));

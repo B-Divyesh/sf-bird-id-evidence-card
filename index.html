@@ -23,7 +23,7 @@
     <a class="skip-link" href="#main">Skip to evidence card</a>
     <p id="route-announcer" class="sr-only" aria-live="polite"></p>
     <div id="offline-banner" class="offline-banner" role="status" hidden>
-      <span aria-hidden="true">●</span> Offline field mode — your work still saves on this device.
+      <span aria-hidden="true">●</span> No connection — your work still saves on this device.
     </div>
     <div id="demo-banner" class="demo-banner" role="status" hidden>
       <span><strong>Demo</strong> — sample data, nothing is saved.</span>
@@ -64,7 +64,7 @@
       <section id="view-workbench" class="app-view" aria-labelledby="workbench-title">
         <div class="section-heading">
           <div><p class="eyebrow">Current observation</p><h2 id="workbench-title" class="route-heading" tabindex="-1">Your current evidence card</h2></div>
-          <div class="save-readout"><span id="save-lamp" aria-hidden="true"></span><span id="save-status" role="status">Ready locally</span></div>
+          <div class="save-readout"><span id="save-lamp" aria-hidden="true"></span><span id="save-status" role="status">Ready on this device</span></div>
         </div>
 
         <nav class="evidence-rail" aria-label="Evidence card sections">
@@ -196,7 +196,7 @@
       <section id="view-records" class="app-view records-view" aria-labelledby="records-title" hidden>
         <div class="section-heading">
           <div><p class="eyebrow">Saved cards</p><h2 id="records-title" tabindex="-1">Saved evidence cards</h2></div>
-          <div class="archive-actions"><button id="export-json" class="secondary-button" type="button">Export backup</button><button id="import-json" class="secondary-button" type="button">Import backup</button><input id="import-file" type="file" accept="application/json,.json" hidden /></div>
+          <div class="backup-actions"><button id="export-json" class="secondary-button" type="button">Export backup</button><button id="import-json" class="secondary-button" type="button">Import backup</button><input id="import-file" type="file" accept="application/json,.json" hidden /></div>
         </div>
         <p class="export-help records-export-help">A backup saves all cards for moving to another browser.</p>
         <div id="records-list" class="records-list"></div>
@@ -231,13 +231,13 @@
     <footer class="site-footer">
       <div><strong>Bird ID Evidence Card</strong><p>A private evidence card for uncertain bird sightings.</p></div>
       <nav aria-label="Legal and project"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/guide">How it works</a></nav>
-      <p class="generated-note">Built by Param Factory · v1.0.3<br />Field-console artwork generated for this product.</p>
+      <p class="generated-note">Built by Param Factory · v1.0.4<br />Artwork generated for Bird ID Evidence Card.</p>
     </footer>
 
     <dialog id="confirm-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-message">
-      <form method="dialog"><h2 id="dialog-title">Confirm action</h2><p id="dialog-message"></p><div class="dialog-actions"><button value="cancel" class="secondary-button">Keep card</button><button value="confirm" class="danger-button">Delete card</button></div></form>
+      <form method="dialog"><h2 id="dialog-title">Delete this evidence card?</h2><p id="dialog-message"></p><div class="dialog-actions"><button value="cancel" class="secondary-button">Keep card</button><button value="confirm" class="danger-button">Delete card</button></div></form>
     </dialog>
-    <div id="toast" class="toast" role="status" aria-live="polite" hidden><span id="toast-message"></span><button id="toast-action" type="button" hidden>Reload</button></div>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden><span id="toast-message"></span><button id="toast-action" type="button" hidden>Load update</button></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

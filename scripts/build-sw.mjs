@@ -68,7 +68,8 @@ self.addEventListener('fetch', (event) => {
         if (url.pathname.startsWith('/demo')) return (await cache.match('/demo/index.html')) || (await cache.match('/index.html')) || (await cache.match('/offline.html'));
         if (url.pathname.startsWith('/records')) return (await cache.match('/records/index.html')) || (await cache.match('/index.html')) || (await cache.match('/offline.html'));
         if (url.pathname.startsWith('/guide')) return (await cache.match('/guide/index.html')) || (await cache.match('/index.html')) || (await cache.match('/offline.html'));
-        return (await cache.match('/index.html')) || (await cache.match('/offline.html'));
+        if (url.pathname === '/') return (await cache.match('/index.html')) || (await cache.match('/offline.html'));
+        return (await cache.match('/offline.html')) || new Response('This page is not available offline.', { status: 503, headers: { 'Content-Type': 'text/plain' } });
       }
     })());
     return;

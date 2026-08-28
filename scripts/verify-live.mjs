@@ -5,7 +5,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { chromium } from '@playwright/test';
 
 const baseURL = (process.argv[2] ?? 'https://bird-id-evidence-card.sociobot.in').replace(/\/$/, '');
-const evidenceDir = path.resolve(process.argv[3] ?? '.factory/evidence/polish-3/live');
+const evidenceDir = path.resolve(process.argv[3] ?? '.factory/evidence/polish-4/live');
 const origin = new URL(baseURL).origin;
 const results = { baseURL, checkedAt: new Date().toISOString(), routes: {}, checks: [] };
 
@@ -36,7 +36,8 @@ const expectedRoutes = [
   ['/records', 'Saved cards — Bird ID Evidence Card', 'Saved evidence cards', '/records'],
   ['/guide', 'Evidence guide — Bird ID Evidence Card', 'Check an uncertain bird in four steps', '/guide'],
   ['/privacy/', 'Privacy — Bird ID Evidence Card', 'Your evidence cards stay on this device', '/privacy/'],
-  ['/terms/', 'Terms — Bird ID Evidence Card', 'Use evidence cards as notes, not verdicts', '/terms/']
+  ['/terms/', 'Terms — Bird ID Evidence Card', 'Use evidence cards as notes, not verdicts', '/terms/'],
+  ['/offline.html', 'Offline — Bird ID Evidence Card', 'That page is not available offline', '/offline.html']
 ];
 
 for (const [route, title, heading] of expectedRoutes) {
@@ -62,7 +63,7 @@ const rootHeaders = await fetch(`${baseURL}/`, { cache: 'no-store' });
 assert.match(rootHeaders.headers.get('content-security-policy') ?? '', /default-src 'self'/);
 assert.equal(rootHeaders.headers.get('x-content-type-options'), 'nosniff');
 assert.equal(rootHeaders.headers.get('referrer-policy'), 'strict-origin-when-cross-origin');
-pass('HTTP routes, raw headings, 404, and security headers', 'six 200 routes; unknown route 404; CSP, nosniff, and referrer policy present');
+pass('HTTP routes, raw headings, 404, and security headers', 'seven 200 routes; unknown route 404; CSP, nosniff, and referrer policy present');
 
 const browser = await chromium.launch({ executablePath: chromium.executablePath(), args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 try {
@@ -126,7 +127,7 @@ try {
     assert.equal(await page.locator('meta[name="twitter:title"]').count(), 1);
     assert.deepEqual(await page.getByRole('navigation', { name: 'Primary' }).getByRole('link').allTextContents(), primaryLabels);
     assert.deepEqual(await page.getByRole('navigation', { name: 'Legal and project' }).getByRole('link').allTextContents(), footerLabels);
-    await page.getByText(/Built by Param Factory · v1\.0\.3/).waitFor();
+    await page.getByText(/Built by Param Factory · v1\.0\.4/).waitFor();
     const accessibility = await new AxeBuilder({ page }).analyze();
     assert.deepEqual(accessibility.violations, [], `${route} must have zero axe violations`);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, `${route} must not overflow horizontally`);
@@ -165,6 +166,9 @@ try {
 
   const offlineContext = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'allow' });
   const offlinePage = await offlineContext.newPage();
+  const offlineErrors = [];
+  offlinePage.on('pageerror', (error) => offlineErrors.push(String(error)));
+  offlinePage.on('console', (message) => { if (message.type() === 'error') offlineErrors.push(message.text()); });
   await offlinePage.goto(`${baseURL}/demo`);
   await offlinePage.evaluate(async () => { await navigator.serviceWorker.ready; });
   await offlinePage.reload();
@@ -172,12 +176,21 @@ try {
   await offlineContext.setOffline(true);
   await offlinePage.reload({ waitUntil: 'domcontentloaded' });
   await offlinePage.getByRole('heading', { level: 1, name: /current evidence card/i }).waitFor();
-  await offlinePage.getByText(/Offline field mode/).waitFor();
+  await offlinePage.getByText(/No connection/).waitFor();
   await offlinePage.goto(`${baseURL}/privacy/`, { waitUntil: 'domcontentloaded' });
   await offlinePage.getByRole('heading', { level: 1, name: /stay on this device/i }).waitFor();
+  await offlinePage.goto(`${baseURL}/cold-offline-fallback-check`, { waitUntil: 'domcontentloaded' });
+  assert.equal(await offlinePage.title(), 'Offline — Bird ID Evidence Card');
+  await offlinePage.getByRole('heading', { level: 1, name: /page is not available offline/i }).waitFor();
+  assert.equal(await offlinePage.locator('h1').count(), 1);
+  assert.deepEqual(await offlinePage.getByRole('navigation', { name: 'Primary' }).getByRole('link').allTextContents(), ['Edit evidence card', 'Try sample data', 'View saved cards', 'Read the evidence guide']);
+  const recoveryBox = await offlinePage.getByRole('link', { name: 'Edit an evidence card' }).boundingBox();
+  assert.ok(recoveryBox && recoveryBox.width >= 44 && recoveryBox.height >= 44);
+  assert.deepEqual((await new AxeBuilder({ page: offlinePage }).analyze()).violations, []);
+  assert.deepEqual(offlineErrors, []);
   await offlineContext.setOffline(false);
   await offlineContext.close();
-  pass('Live offline shell', 'demo and privacy routes reopened cold with network disabled');
+  pass('Live offline shell and fallback', 'demo and privacy reopened offline; an uncached route used the styled fallback with no console or axe errors');
 } finally {
   await browser.close();
 }

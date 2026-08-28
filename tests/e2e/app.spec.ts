@@ -26,7 +26,7 @@ test('@claim:record-evidence-card saves and reopens a completed evidence card', 
   await page.goto('/?demo=1');
   await page.getByLabel('Visual traits').fill('Pale seabird banking below the cliff with a stiff-winged glide.');
   await page.getByRole('button', { name: 'Save evidence card' }).click();
-  await expect(page.getByText(/Complete evidence card saved locally|Filed locally/i).first()).toBeVisible();
+  await expect(page.getByText(/Complete evidence card saved on this device|Saved on this device/i).first()).toBeVisible();
   await page.reload();
   await expect(page.getByLabel('Visual traits')).toHaveValue(/Pale seabird banking/);
   await page.getByRole('link', { name: /View saved cards/ }).click();
@@ -64,7 +64,7 @@ test('@claim:offline-demo works offline after the first visit', async ({ page, c
   await context.setOffline(true);
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { level: 1, name: /current evidence card/i })).toBeVisible();
-  await expect(page.getByText(/Offline field mode/)).toBeVisible();
+  await expect(page.getByText(/No connection/)).toBeVisible();
   await page.getByLabel('Locality *').fill('Offline Deerness coast');
   await expect(page.getByLabel('Locality *')).toHaveValue('Offline Deerness coast');
   await context.setOffline(false);
@@ -84,7 +84,7 @@ test('@claim:free opens and uses the sample without an account or payment prompt
   await page.goto('/demo');
   await expect(page.getByText(sampleTitle).first()).toBeVisible();
   await page.getByRole('button', { name: 'Save evidence card' }).click();
-  await expect(page.getByText(/Filed locally|saved locally/i).first()).toBeVisible();
+  await expect(page.getByText(/Saved on this device/i).first()).toBeVisible();
   await expect(page.getByText(/payment|subscribe|purchase/i)).toHaveCount(0);
 });
 
@@ -93,7 +93,7 @@ test('@claim:no-account completes the sample flow without account setup', async 
   page.on('request', (request) => requests.push(request.url()));
   await page.goto('/demo');
   await page.getByRole('button', { name: 'Save evidence card' }).click();
-  await expect(page.getByText(/Filed locally|saved locally/i).first()).toBeVisible();
+  await expect(page.getByText(/Saved on this device/i).first()).toBeVisible();
   await expect(page.locator('input[type="email"], input[type="password"]')).toHaveCount(0);
   await expect(page.getByText(/sign in|create an account|log in/i)).toHaveCount(0);
   expect(requests.some((url) => /auth|login|account/i.test(new URL(url).pathname))).toBeFalsy();
@@ -156,6 +156,7 @@ test('@claim:exports downloads and imports complete CSV, Markdown, and JSON file
   await freshPage.goto('http://127.0.0.1:4173/records');
   await freshPage.locator('#import-file').setInputFiles(backupPath);
   await expect(freshPage.getByText('Deerness coast, Orkney')).toBeVisible();
+  await expect(freshPage.getByText('Imported 1 card. Existing copies of those cards were replaced.')).toBeVisible();
   await freshContext.close();
 });
 
@@ -311,7 +312,7 @@ test('all routes have no axe violations, horizontal overflow, or undersized chro
   await page.getByLabel('Date & time *').fill('2026-08-28T10:12');
   await page.getByLabel('Locality *').fill('Accessibility route check');
   await page.getByRole('button', { name: 'Save evidence card' }).click();
-  const paths = ['/', '/demo', '/records', '/guide', '/privacy/', '/terms/', '/404.html'];
+  const paths = ['/', '/demo', '/records', '/guide', '/privacy/', '/terms/', '/404.html', '/offline.html'];
   for (const path of paths) {
     await page.goto(path);
     const results = await new AxeBuilder({ page: page as any }).analyze();
@@ -338,7 +339,8 @@ test('all public pages share navigation, footer links, build id, and complete me
     ['/guide', 'Evidence guide — Bird ID Evidence Card', '/guide'],
     ['/privacy/', 'Privacy — Bird ID Evidence Card', '/privacy/'],
     ['/terms/', 'Terms — Bird ID Evidence Card', '/terms/'],
-    ['/404.html', 'Page not found — Bird ID Evidence Card', '/404']
+    ['/404.html', 'Page not found — Bird ID Evidence Card', '/404'],
+    ['/offline.html', 'Offline — Bird ID Evidence Card', '/offline.html']
   ] as const;
   const expectedPrimary = ['Edit evidence card', 'Try sample data', 'View saved cards', 'Read the evidence guide'];
   const expectedFooter = ['Privacy', 'Terms', 'How it works'];
@@ -354,8 +356,29 @@ test('all public pages share navigation, footer links, build id, and complete me
     await expect(primary).toBeVisible();
     expect(await primary.getByRole('link').allTextContents()).toEqual(expectedPrimary);
     expect(await page.getByRole('navigation', { name: 'Legal and project' }).getByRole('link').allTextContents()).toEqual(expectedFooter);
-    await expect(page.getByText(/Built by Param Factory · v1\.0\.3/)).toBeVisible();
+    await expect(page.getByText(/Built by Param Factory · v1\.0\.4/)).toBeVisible();
   }
+});
+
+test('state messages use evidence-card terms and action-specific dialog headings', async ({ page }) => {
+  await page.goto('/demo');
+  await expect(page.locator('#save-status')).toHaveText(/Draft restored from this device|Ready on this device/);
+  await page.getByRole('button', { name: 'Start a new card' }).click();
+  const newDialog = page.getByRole('dialog');
+  await expect(newDialog.getByRole('heading', { name: 'Start a new evidence card?' })).toBeVisible();
+  await expect(newDialog).toContainText('stays under Saved evidence cards');
+  await newDialog.getByRole('button', { name: 'Keep card' }).click();
+
+  await page.getByRole('link', { name: 'View saved cards' }).click();
+  await page.getByRole('button', { name: 'Delete' }).click();
+  const deleteDialog = page.getByRole('dialog');
+  await expect(deleteDialog.getByRole('heading', { name: 'Delete this evidence card?' })).toBeVisible();
+  await expect(deleteDialog).toContainText('exported backup');
+  await deleteDialog.getByRole('button', { name: 'Keep card' }).click();
+
+  await page.evaluate(() => navigator.serviceWorker.dispatchEvent(new MessageEvent('message', { data: { type: 'UPDATE_AVAILABLE' } })));
+  await expect(page.getByText('An update is ready.')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Load update' })).toBeVisible();
 });
 
 test('invalid input and import errors explain recovery without console errors', async ({ page }) => {
@@ -395,5 +418,10 @@ test('the installed app shell opens demo and legal routes offline', async ({ pag
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible();
   }
+  const fallbackResponse = await page.goto('/offline.html', { waitUntil: 'domcontentloaded' });
+  expect(fallbackResponse?.fromServiceWorker()).toBeTruthy();
+  await expect(page).toHaveTitle('Offline — Bird ID Evidence Card');
+  await expect(page.getByRole('heading', { level: 1, name: 'That page is not available offline.' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Edit an evidence card' })).toHaveCSS('min-height', '44px');
   await context.setOffline(false);
 });

@@ -1,6 +1,6 @@
-# Copy audit — polish 3
+# Copy audit — polish 4
 
-Checked 2026-08-28. Hyphenated terms count as one word. No public sentence exceeds 22 words. No banned marketing word appears. File-format terms are explained where a visitor chooses an export.
+Checked 2026-08-28. Hyphenated terms count as one word. No public sentence exceeds 22 words. No banned marketing word appears. File-format terms are explained where a visitor chooses an export. The source-backed audit test also covers dialog, toast, error, offline, and import/export states.
 
 ## Landing, workbench, demo, and guide
 
@@ -50,7 +50,46 @@ Checked 2026-08-28. Hyphenated terms count as one word. No public sentence excee
 | Cards are stored in this browser. | 6 | `stored-card-schema` |
 | Export a backup before clearing browser storage or changing phones. | 10 | Instruction |
 | A private evidence card for uncertain bird sightings. | 8 | Pass |
-| Field-console artwork generated for this product. | 6 | `generated-artwork` |
+| Artwork generated for Bird ID Evidence Card. | 7 | `generated-artwork` |
+
+## Dialog, toast, error, update, and offline states
+
+| Copy or tested fragment | Words | Result |
+| --- | ---: | --- |
+| No connection — your work still saves on this device. | 9 | `offline-demo`; replaces `Offline field mode` |
+| Ready on this device | 4 | Pass |
+| Saving draft… | 2 | Pass |
+| Saved on this device | 4 | `stored-card-schema` |
+| Save failed — export this card | 6 | Clear recovery action |
+| This browser could not save your changes. | 7 | Clear error |
+| Your current work remains on screen; export it before leaving. | 10 | Clear recovery action |
+| Complete evidence card saved on this device. | 7 | `record-evidence-card` |
+| Draft card saved. | 3 | `record-evidence-card` |
+| The readiness list shows what is still missing. | 8 | Pass |
+| Saved as verified. | 3 | Pass |
+| Consider adding an independent reference or reasoning note. | 8 | Instruction |
+| Start a new evidence card? | 5 | Action-specific dialog heading |
+| Stays under Saved evidence cards. | 5 | Pass; rendered with the card title |
+| Has not been saved and will be cleared. | 8 | Warning; rendered with the card title |
+| New evidence card ready. | 4 | Pass |
+| Delete this evidence card? | 4 | Action-specific dialog heading |
+| Restore it only from an exported backup. | 7 | `exports`; replaces `JSON backup` in the dialog |
+| Evidence card deleted from this device. | 7 | `delete-card` |
+| The card could not be deleted. | 6 | Clear error |
+| Try again. | 2 | Clear recovery action |
+| Could not read your saved evidence cards for backup. | 9 | Clear export error |
+| Existing copies of those cards were replaced. | 7 | Clear import result; rendered with the imported count |
+| That file is not a valid Bird ID Evidence Card backup. | 11 | Clear import error |
+| No data was changed. | 5 | Clear import result |
+| Back online. | 2 | Pass |
+| Your cards remained available. | 4 | Pass |
+| An update is ready. | 4 | Clear update state |
+| Load update | 2 | Result-naming action |
+| Sample evidence card reset. | 4 | Clear demo feedback |
+| That page is not available offline. | 7 | Offline fallback heading |
+| Open your evidence card or the sample sighting. | 8 | Recovery instruction |
+| Return to the missing page when you have a connection. | 10 | Recovery instruction |
+| Artwork generated for Bird ID Evidence Card. | 7 | `generated-artwork` |
 
 ## Privacy and terms
 

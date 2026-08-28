@@ -27,4 +27,32 @@ describe('claim registry', () => {
       expect(`${browserTests}\n${unitTests}`.split(tag)).toHaveLength(2);
     }
   });
+
+  it('audits dialog, toast, error, offline, and import or export state copy', async () => {
+    const [html, app, offline, audit] = await Promise.all([
+      readFile(new URL('../../index.html', import.meta.url), 'utf8'),
+      readFile(new URL('../../src/main.ts', import.meta.url), 'utf8'),
+      readFile(new URL('../../public/offline.html', import.meta.url), 'utf8'),
+      readFile(new URL('../../.factory/copy-audit.md', import.meta.url), 'utf8')
+    ]);
+    const publicSources = `${html}\n${app}\n${offline}`;
+    for (const retired of [
+      'Ready locally', 'Saved locally', 'Filed locally', 'saved in your archive',
+      'local archive', 'matching IDs', 'fresh field console', 'Confirm action',
+      'Offline field mode', 'Field-console artwork generated for this product'
+    ]) expect(publicSources).not.toContain(retired);
+
+    for (const current of [
+      'No connection', 'Ready on this device', 'Saved on this device',
+      'Save failed — export this card', 'Start a new evidence card?',
+      'stays under Saved evidence cards', 'Delete this evidence card?',
+      'exported backup', 'Could not read your saved evidence cards for backup',
+      'Existing copies of those cards were replaced', 'An update is ready',
+      'Load update', 'That page is not available offline',
+      'Artwork generated for Bird ID Evidence Card'
+    ]) {
+      expect(publicSources).toContain(current);
+      expect(audit.toLowerCase()).toContain(current.toLowerCase());
+    }
+  });
 });

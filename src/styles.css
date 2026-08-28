@@ -195,7 +195,7 @@ input[type="range"] { width: 100%; min-height: 44px; margin-top: 4px; accent-col
 .readiness-item.is-complete::before { content: "●"; color: var(--success); }
 .readout-note { margin: 14px 0 0; color: color-mix(in srgb, var(--ink) 82%, transparent); font-size: 13px; line-height: 1.4; }
 
-.archive-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.backup-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .records-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 .record-item { display: flex; flex-direction: column; padding: 22px; border: 1px solid var(--ink); background: var(--surface); box-shadow: 5px 5px 0 var(--panel-deep); content-visibility: auto; contain-intrinsic-size: 280px; }
 .record-item-top { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
@@ -285,8 +285,8 @@ dialog h2 { margin: 0; font: 800 28px/1.1 var(--sans); text-transform: uppercase
   .form-actions > *, .export-group > * { width: 100%; }
   .export-group { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
   .readiness-list { grid-template-columns: 1fr; }
-  .archive-actions { width: 100%; }
-  .archive-actions button { flex: 1; }
+  .backup-actions { width: 100%; }
+  .backup-actions button { flex: 1; }
   .site-footer { grid-template-columns: 1fr; padding: 36px 22px; }
   .site-footer nav { flex-wrap: wrap; }
   .site-footer .generated-note { grid-column: auto; }

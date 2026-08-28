@@ -65,7 +65,7 @@ const sharedHeader = base.match(/<header class="site-header">[\s\S]*?<\/header>/
 const sharedFooter = base.match(/<footer class="site-footer">[\s\S]*?<\/footer>/)?.[0];
 if (!sharedHeader || !sharedFooter) throw new Error('Could not find the shared product shell.');
 
-for (const file of ['privacy/index.html', 'terms/index.html', '404.html']) {
+for (const file of ['privacy/index.html', 'terms/index.html', '404.html', 'offline.html']) {
   const url = new URL(file, root);
   const source = await readFile(url, 'utf8');
   const html = source

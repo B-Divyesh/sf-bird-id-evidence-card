@@ -37,6 +37,7 @@ const toast = byId('toast');
 const toastMessage = byId('toast-message');
 const toastAction = byId<HTMLButtonElement>('toast-action');
 const confirmDialog = byId<HTMLDialogElement>('confirm-dialog');
+const dialogTitle = byId('dialog-title');
 const dialogMessage = byId('dialog-message');
 
 document.querySelector<HTMLAnchorElement>('.skip-link')?.addEventListener('click', (event) => {
@@ -275,11 +276,11 @@ const autosave = (): void => {
     try {
       await saveDraft(current);
       storageHealthy = true;
-      setSaveState(`Saved locally · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
+      setSaveState(`Saved on this device · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
     } catch (error) {
       storageHealthy = false;
-      setSaveState('Local save failed — export a backup', 'error');
-      showError('This browser could not save locally. Your current work remains on screen; export it before leaving.');
+      setSaveState('Save failed — export this card', 'error');
+      showError('This browser could not save your changes. Your current work remains on screen; export it before leaving.');
       console.error(error);
     }
   }, 350);
@@ -318,7 +319,8 @@ const download = (content: string, filename: string, type: string): void => {
   window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
 };
 
-const confirmAction = (message: string, actionLabel: string): Promise<boolean> => new Promise((resolve) => {
+const confirmAction = (title: string, message: string, actionLabel: string): Promise<boolean> => new Promise((resolve) => {
+  dialogTitle.textContent = title;
   dialogMessage.textContent = message;
   const confirmButton = confirmDialog.querySelector<HTMLButtonElement>('[value="confirm"]');
   if (confirmButton) confirmButton.textContent = actionLabel;
@@ -449,8 +451,8 @@ form.addEventListener('submit', async (event) => {
     await saveDraft(current);
     cards = await getCards();
     renderPreview();
-    setSaveState(`Filed locally · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
-    showToast(isComplete(current) ? 'Complete evidence card saved locally.' : 'Draft card saved. The readiness list shows what is still missing.');
+    setSaveState(`Saved on this device · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
+    showToast(isComplete(current) ? 'Complete evidence card saved on this device.' : 'Draft card saved. The readiness list shows what is still missing.');
     if (current.decision === 'verified' && current.references.length === 0) showToast('Saved as verified. Consider adding an independent reference or reasoning note.');
   } catch (error) {
     storageHealthy = false;
@@ -464,7 +466,10 @@ byId('export-csv').addEventListener('click', () => { current = readCardFromForm(
 
 byId('new-card').addEventListener('click', async () => {
   current = readCardFromForm();
-  if (isMeaningfulDraft(current) && !await confirmAction(`Start a new card? “${cardTitle(current)}” remains ${current.cardNumber ? 'saved in your archive' : 'only in this draft'}.`, 'Start new card')) return;
+  const newCardMessage = current.cardNumber
+    ? `“${cardTitle(current)}” stays under Saved evidence cards.`
+    : `“${cardTitle(current)}” has not been saved and will be cleared.`;
+  if (isMeaningfulDraft(current) && !await confirmAction('Start a new evidence card?', newCardMessage, 'Start new card')) return;
   current = createBlankCard();
   await clearDraft().catch((error) => console.error(error));
   populateForm();
@@ -497,7 +502,7 @@ byId('records-list').addEventListener('click', async (event) => {
   } else if (action === 'markdown') download(toMarkdown(card), suggestedFilename(card, 'md'), 'text/markdown;charset=utf-8');
   else if (action === 'csv') download(toCsv(card), suggestedFilename(card, 'csv'), 'text/csv;charset=utf-8');
   else if (action === 'delete') {
-    if (!await confirmAction(`Delete ${card.cardNumber || 'this card'}, “${cardTitle(card)}”? This cannot be undone unless you have a JSON backup.`, 'Delete card')) return;
+    if (!await confirmAction('Delete this evidence card?', `${card.cardNumber || 'This card'}, “${cardTitle(card)}”, will be removed from this browser. Restore it only from an exported backup.`, 'Delete card')) return;
     try {
       await deleteCard(card.id);
       if (current.id === card.id) {
@@ -519,7 +524,7 @@ byId('export-json').addEventListener('click', async () => {
     const backup = { product: 'bird-id-evidence-card', version: 1, exportedAt: new Date().toISOString(), cards };
     download(JSON.stringify(backup, null, 2), `bird-evidence-backup-${new Date().toISOString().slice(0, 10)}.json`, 'application/json');
     showToast(`${cards.length} card${cards.length === 1 ? '' : 's'} exported in the backup.`);
-  } catch (error) { console.error(error); showToast('Could not read the local archive for export.'); }
+  } catch (error) { console.error(error); showToast('Could not read your saved evidence cards for backup.'); }
 });
 
 byId('import-json').addEventListener('click', () => byId<HTMLInputElement>('import-file').click());
@@ -536,7 +541,7 @@ byId<HTMLInputElement>('import-file').addEventListener('change', async (event) =
     if (!normalized.length) throw new Error('No valid evidence cards');
     await importCards(normalized);
     await renderRecords();
-    showToast(`Imported ${normalized.length} card${normalized.length === 1 ? '' : 's'}; matching IDs were updated.`);
+    showToast(`Imported ${normalized.length} card${normalized.length === 1 ? '' : 's'}. Existing copies of those cards were replaced.`);
   } catch {
     showToast('That file is not a valid Bird ID Evidence Card backup. No data was changed.');
   }
@@ -551,12 +556,12 @@ const registerServiceWorker = async (): Promise<void> => {
   try {
     const registration = await navigator.serviceWorker.register('/sw.js');
     navigator.serviceWorker.addEventListener('message', (event) => {
-      if (event.data?.type === 'UPDATE_AVAILABLE') showToast('A fresh field console is ready.', true);
+      if (event.data?.type === 'UPDATE_AVAILABLE') showToast('An update is ready.', true);
     });
     registration.addEventListener('updatefound', () => {
       const worker = registration.installing;
       worker?.addEventListener('statechange', () => {
-        if (worker.state === 'installed' && navigator.serviceWorker.controller) showToast('A fresh field console is ready.', true);
+        if (worker.state === 'installed' && navigator.serviceWorker.controller) showToast('An update is ready.', true);
       });
     });
   } catch (error) { console.warn('Offline installation is unavailable:', error); }
@@ -603,7 +608,7 @@ const initialize = async (): Promise<void> => {
       cards = [current];
     }
     cards = savedCards.map(normalizeCard).filter((card): card is EvidenceCard => card !== null);
-    setSaveState(draft ? 'Draft restored from this device' : 'Ready locally');
+    setSaveState(draft ? 'Draft restored from this device' : 'Ready on this device');
   } catch (error) {
     storageHealthy = false;
     console.error(error);
