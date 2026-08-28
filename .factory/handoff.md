@@ -1,14 +1,19 @@
-# Polish 5 handoff
+# Review 6 handoff
 
 ## Outcome
 
-Round 5 is complete at application commit `61181b9f18c4cd196ac0e81da17a32d6086d1cfb`. All findings from reviews 1–5 were rechecked and closed. The deployed PWA is <https://bird-id-evidence-card.sociobot.in>.
+The independent adversarial review at commit `11218c9c8082baeac712d7f0061f08327e239884` passed with zero findings. Product code was not modified. The deployed PWA is <https://bird-id-evidence-card.sociobot.in>.
 
-This repair adds tested 12-candidate and 20-reference limits, consistent readiness terms, the missing three-step landing explanation and privacy/limits section, deployment documentation, a verb-first catalog line, and build `v1.0.5`. The field-instrument visual system and offline/local-first deployment class are unchanged.
+The review confirmed the cold-phone message, one-click isolated demo, all current claims, offline/privacy behavior, routes, metadata, accessibility coverage, and prior finding closure. The field-instrument visual system and offline/local-first deployment class are unchanged.
 
-The cumulative finding map is [polish-5.md](polish-5.md).
+The complete report is [review-6.md](review-6.md).
 
 ## Verification
+
+- Fresh live 390 × 844 and desktop contexts confirmed the job, audience, sample action, outcome, and three facts before scrolling.
+- The demo loaded a completed Deerness coast sample, showed its persistent isolation banner, reset correctly, remained same-origin-only, and passed real/demo IndexedDB isolation and offline checks.
+- Fresh clone `/tmp/bird-review6-clean`: `npm ci`, every exact claim command (16/16), `npm test`, `npm run build`, and `npm run test:build` passed.
+- Review-6 route/metadata/focus crawl passed for app, demo, records, guide, legal, offline, and 404 views. Unknown live paths return the designed HTTP 404. All nine discovered same-origin links responded successfully.
 
 - Clean clone: `/tmp/bird-polish5-clean.eznbKb` at `61181b9f18c4cd196ac0e81da17a32d6086d1cfb`.
 - `npm ci`: passed with zero vulnerabilities.
