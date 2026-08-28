@@ -1,0 +1,9 @@
+{
+  "slug": "bird-id-evidence-card",
+  "title": "Bird ID Evidence Card",
+  "artifact_class": "pwa-offline",
+  "user": "Birders using an identification app who need to compare a tentative result against their own observed evidence before deciding whether to log it.",
+  "smallest_useful_product": "Offline-first mobile web form for recording date/location precision, visual traits, call notes, candidate species, confidence, and links to user-selected licensed reference recordings; export as a Markdown/CSV evidence card.",
+  "constraints": "Do not expose sensitive nesting locations by default; use only user-linked or openly licensed reference media; clearly distinguish suggestions from verified observations; respect eBird/BirdNET terms.",
+  "monetization": "free"
+}
