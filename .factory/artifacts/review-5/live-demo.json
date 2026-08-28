@@ -1,0 +1,71 @@
+{
+  "demo": {
+    "first": {
+      "url": "https://bird-id-evidence-card.sociobot.in/?demo=1",
+      "scrollY": 0,
+      "title": "Demo — Bird ID Evidence Card",
+      "h1": [
+        "Your current evidence card"
+      ],
+      "viewportText": [
+        "Demo",
+        "Reset demo",
+        "Start a blank card",
+        "Bird ID",
+        "Evidence Card",
+        "Edit evidence card",
+        "Try sample data",
+        "View saved cards",
+        "Read the evidence guide",
+        "Current observation",
+        "Your current evidence card",
+        "Ready on this device",
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "06",
+        "Evidence card preview",
+        "Complete · 5/5",
+        "Evidence card",
+        "BID-20260828-001",
+        "Northern Fulmar",
+        "Observed",
+        "Aug 28, 2026, 10:12 AM",
+        "Locality",
+        "Deerness coast, Orkney",
+        "Leading candidate",
+        "Northern Fulmar",
+        "Confidence",
+        "65% · Tentative"
+      ]
+    },
+    "initialLocality": "Deerness coast, Orkney",
+    "resetLocality": "Deerness coast, Orkney",
+    "banner": true,
+    "sampleVisible": true,
+    "requestsOnlySameOrigin": true,
+    "requestOrigins": [
+      "https://bird-id-evidence-card.sociobot.in"
+    ],
+    "errors": []
+  },
+  "isolation": {
+    "databaseNames": [
+      "bird-id-evidence-card",
+      "demo:bird-id-evidence-card"
+    ],
+    "realUnchanged": true,
+    "realContainsSentinel": true,
+    "demoCleared": true
+  },
+  "offline": {
+    "url": "https://bird-id-evidence-card.sociobot.in/demo",
+    "sampleVisible": true,
+    "offlineBanner": true,
+    "editValue": "Offline review 5 edit",
+    "errors": [],
+    "failed": []
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "status": 200,
+  "errors": [],
+  "url": "https://bird-id-evidence-card.sociobot.in/",
+  "title": "Bird ID Evidence Card — record uncertain sightings",
+  "description": "Record what you saw and heard before you log an uncertain bird sighting.",
+  "h1": [
+    "Record bird evidence before you log."
+  ],
+  "bodyText": "Skip to evidence card\n\nBIRD ID\nEVIDENCE CARD\nEdit evidence card\nTry sample data\nView saved cards\nRead the evidence guide\n\nA PRIVATE EVIDENCE CARD\n\nRECORD BIRD EVIDENCE BEFORE YOU LOG.\n\nFor birders checking an app suggestion against what they saw and heard.\n\nTry it with sample data\nSee a completed uncertain-sighting card.\nWORKS OFFLINE AFTER FIRST VISIT\nSTAYS ON THIS DEVICE\nFREE\n\nCURRENT OBSERVATION\n\nYOUR CURRENT EVIDENCE CARD\nReady on this device\n01\nCONTEXT\n02\nLOOK\n03\nLISTEN\n04\nCANDIDATES\n05\nREFERENCES\n06\nDECISION\n01\n\nOBSERVED FACT\n\nWHEN AND WHERE\nREQUIRED FOR A COMPLETE CARD\nDate & time *\nLocality *\nName the broad place, not a nest site.\nLocation detail in exports\nPrivate\nLocality only\nApprox.\n~10 km\nPrecise\nCoordinates\n\nCoordinates hidden. Coordinates are excluded. Avoid recording nest locations for sensitive species.\n\nHabitat\nConditions\n02\n\nOBSERVED FACT\n\nWHAT YOU SAW\nView quality\nNot seen\nGlimpse\nClear\nVisual traits\nSpecific negatives help too: “no black wing tips visible.”\n03\n\nOBSERVED FACT\n\nWHAT YOU HEARD\nCall or song notes\nNo call heard\nThis is still useful observed evidence.\n04\n\nSUGGESTION, NOT OBSERVATION\n\nCANDIDATE SPECIES\n+ Add candidate\n\nRecord who suggested it and why it does or does not fit. Set your confidence.\n\nCANDIDATE 1\nSpecies or working name\nSuggested by\nField app suggestion\nAudio app suggestion\nField guide\nAnother birder\nPersonal hypothesis\nYour confidence\n50%\nTENTATIVE\nFits and contradictions\n05\n\nUSER-SELECTED SOURCES\n\nREFERENCE RECORDINGS\n+ Add reference\n\nLink to material you have permission to use. The app stores the link as text and does not fetch it.\n\nNo references linked yet. This step is optional.\n\n06\n\nYOUR CONCLUSION\n\nCHOOSE THE IDENTIFICATION STATUS\nReview status\nUnresolved\nKeep comparing\nLikely\nEvidence leans one way\nVerified\nIndependently supported\nCurrent identification\nReasoning and next check\nSave evidence card\nExport Markdown\nExport CSV\nStart a new card\n\nCSV opens in a spreadsheet. Markdown is a shareable text card.\n\nEVIDENCE CARD PREVIEW\n\nDRAFT · 0/5\nEVIDENCE CARD\nUNFILED\nUNRESOLVED BIRD\nOBSERVED\nAug 28, 2026, 3:27 PM\nLOCALITY\nPrivate locality\nLEADING CANDIDATE\nNone yet\nCONFIDENCE\n—\nOBSERVED EVIDENCE\n\nYour visual and audio notes will appear here.\n\nUNRESOLVED\n⌾ LOCALITY ONLY\nDate & locality\nVisual account\nAudio account\nCandidate named\nReasoning noted\n\nA complete card does not confirm the species. It records what you observed and what still needs checking.\n\nBIRD ID EVIDENCE CARD\n\nA private evidence card for uncertain bird sightings.\n\nPrivacy\nTerms\nHow it works\n\nBuilt by Param Factory · v1.0.4\nArtwork generated for Bird ID Evidence Card.",
+  "visible": [
+    {
+      "tag": "a",
+      "text": "Bird IDEvidence Card",
+      "top": 15,
+      "bottom": 63,
+      "left": 130,
+      "right": 312,
+      "inViewport": true
+    },
+    {
+      "tag": "a",
+      "text": "Edit evidence card",
+      "top": 17,
+      "bottom": 61,
+      "left": 611,
+      "right": 778,
+      "inViewport": true
+    },
+    {
+      "tag": "a",
+      "text": "Try sample data",
+      "top": 17,
+      "bottom": 61,
+      "left": 782,
+      "right": 929,
+      "inViewport": true
+    },
+    {
+      "tag": "a",
+      "text": "View saved cards",
+      "top": 17,
+      "bottom": 61,
+      "left": 933,
+      "right": 1092,
+      "inViewport": true
+    },
+    {
+      "tag": "a",
+      "text": "Read the evidence guide",
+      "top": 17,
+      "bottom": 61,
+      "left": 1096,
+      "right": 1310,
+      "inViewport": true
+    },
+    {
+      "tag": "p",
+      "text": "A private evidence card",
+      "top": 145,
+      "bottom": 160,
+      "left": 130,
+      "right": 808,
+      "inViewport": true
+    },
+    {
+      "tag": "h1",
+      "text": "Record bird evidence before you log.",
+      "top": 167,
+      "bottom": 375,
+      "left": 130,
+      "right": 808,
+      "inViewport": true
+    },
+    {
+      "tag": "p",
+      "text": "For birders checking an app suggestion against what they saw and heard.",
+      "top": 399,
+      "bottom": 430,
+      "left": 130,
+      "right": 760,
+      "inViewport": true
+    },
+    {
+      "tag": "a",
+      "text": "Try it with sample data",
+      "top": 458,
+      "bottom": 504,
+      "left": 130,
+      "right": 324,
+      "inViewport": true
+    },
+    {
+      "tag": "p",
+      "text": "Current observation",
+      "top": 695,
+      "bottom": 710,
+      "left": 130,
+      "right": 838,
+      "inViewport": true
+    },
+    {
+      "tag": "h2",
+      "text": "Your current evidence card",
+      "top": 717,
+      "bottom": 763,
+      "left": 130,
+      "right": 838,
+      "inViewport": true
+    },
+    {
+      "tag": "a",
+      "text": "01Context",
+      "top": 788,
+      "bottom": 846,
+      "left": 131,
+      "right": 327,
+      "inViewport": true
+    },
+    {
+      "tag": "a",
+      "text": "02Look",
+      "top": 788,
+      "bottom": 846,
+      "left": 327,
+      "right": 524,
+      "inViewport": true
+    },
+    {
+      "tag": "a",
+      "text": "03Listen",
+      "top": 788,
+      "bottom": 846,
+      "left": 524,
+      "right": 720,
+      "inViewport": true
+    },
+    {
+      "tag": "a",
+      "text": "04Candidates",
+      "top": 788,
+      "bottom": 846,
+      "left": 720,
+      "right": 916,
+      "inViewport": true
+    },
+    {
+      "tag": "a",
+      "text": "05References",
+      "top": 788,
+      "bottom": 846,
+      "left": 916,
+      "right": 1113,
+      "inViewport": true
+    },
+    {
+      "tag": "a",
+      "text": "06Decision",
+      "top": 788,
+      "bottom": 846,
+      "left": 1113,
+      "right": 1309,
+      "inViewport": true
+    }
+  ],
+  "scrollY": 0,
+  "innerWidth": 1440,
+  "innerHeight": 900
+}
