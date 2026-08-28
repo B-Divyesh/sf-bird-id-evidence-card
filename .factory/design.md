@@ -14,9 +14,9 @@ Daylight treatment (default):
 - `panel #E1D5B8` — enamelled instrument surface
 - `panel-deep #C9B993` — recessed controls
 - `ink #1D2823` — near-black green, 12.2:1 on paper
-- `ink-muted #566158` — secondary ink, 5.3:1 on paper
+- `ink-muted #4C574E` — secondary ink, AA on both paper and panel
 - `pine #174D3C` — primary action and verified observation
-- `signal #A53B2A` — selected/attention indicator, never the only cue
+- `signal #963321` — selected/attention indicator, never the only cue
 - `amber #7B5512` — uncertainty/warning
 - `danger #8E2F26`, `success #235D43`
 

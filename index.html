@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#174d3c" />
+    <meta name="description" content="Record what you saw and heard, compare uncertain bird candidates, and export the evidence—not just the answer." />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icon-192.png" />
+    <title>Bird ID Evidence Card — compare before you log</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to evidence card</a>
+    <div id="offline-banner" class="offline-banner" role="status" hidden>
+      <span aria-hidden="true">●</span> Offline field mode — your work still saves on this device.
+    </div>
+    <header class="site-header">
+      <a class="wordmark" href="#workbench" aria-label="Bird ID Evidence Card home">
+        <span class="wordmark-dial" aria-hidden="true"></span>
+        <span><strong>Bird ID</strong><small>Evidence Card</small></span>
+      </a>
+      <nav aria-label="Primary">
+        <button class="nav-button is-active" type="button" data-view="workbench" aria-current="page">Workbench</button>
+        <button class="nav-button" type="button" data-view="records">Saved cards <span id="record-count" class="count">0</span></button>
+        <button class="nav-button" type="button" data-view="guide">Field guide</button>
+      </nav>
+    </header>
+
+    <main id="main">
+      <div class="masthead">
+        <div class="masthead-copy">
+          <p class="eyebrow">Field console · No ID algorithm</p>
+          <h1>Keep the evidence.<br /><em>Then</em> decide.</h1>
+          <p class="lede">Separate what you observed from what an app suggested. Build a private, portable reasoning trail before you log a bird.</p>
+          <div class="trust-strip" aria-label="Product qualities">
+            <span>Works offline</span><span>Stays on device</span><span>Exports cleanly</span>
+          </div>
+        </div>
+        <picture class="masthead-art">
+          <source type="image/avif" srcset="/assets/field-console-480.avif 480w, /assets/field-console-768.avif 768w" sizes="(max-width: 760px) 92vw, 420px" />
+          <source type="image/webp" srcset="/assets/field-console-480.webp 480w, /assets/field-console-768.webp 768w" sizes="(max-width: 760px) 92vw, 420px" />
+          <img src="/assets/field-console-768.jpg" width="768" height="768" alt="Illustrated field desk with an analog receiver, binoculars, evidence notes, and a sound waveform" fetchpriority="high" decoding="async" />
+        </picture>
+      </div>
+
+      <section id="view-workbench" class="app-view" aria-labelledby="workbench-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">Current observation</p><h2 id="workbench-title" tabindex="-1">Evidence workbench</h2></div>
+          <div class="save-readout"><span id="save-lamp" aria-hidden="true"></span><span id="save-status" role="status">Ready locally</span></div>
+        </div>
+
+        <nav class="evidence-rail" aria-label="Evidence card sections">
+          <a href="#context-section" data-progress="context"><span>01</span>Context</a>
+          <a href="#look-section" data-progress="look"><span>02</span>Look</a>
+          <a href="#listen-section" data-progress="listen"><span>03</span>Listen</a>
+          <a href="#candidate-section" data-progress="candidates"><span>04</span>Candidates</a>
+          <a href="#reference-section" data-progress="references"><span>05</span>References</a>
+          <a href="#decision-section" data-progress="decision"><span>06</span>Decision</a>
+        </nav>
+
+        <div class="workbench-grid">
+          <form id="evidence-form" novalidate>
+            <div id="form-error" class="form-error" role="alert" hidden></div>
+            <section id="context-section" class="form-section" aria-labelledby="context-title">
+              <div class="section-index" aria-hidden="true">01</div>
+              <div class="section-body">
+                <div class="form-section-title"><div><p class="eyebrow">Observed fact</p><h3 id="context-title">When and where</h3></div><span class="required-key">Required for a complete card</span></div>
+                <div class="field-grid two">
+                  <label>Date &amp; time <span aria-hidden="true">*</span><input id="observedAt" name="observedAt" type="datetime-local" required /></label>
+                  <label>Locality <span aria-hidden="true">*</span><input id="locationName" name="locationName" type="text" maxlength="100" autocomplete="off" placeholder="e.g. Deerness coast" required /><small>Name the broad place, not a nest site.</small></label>
+                </div>
+                <fieldset class="privacy-control">
+                  <legend>Location detail in exports</legend>
+                  <div class="segmented location-segments">
+                    <label><input type="radio" name="locationPrecision" value="private" checked /><span>Private<small>Locality only</small></span></label>
+                    <label><input type="radio" name="locationPrecision" value="approximate" /><span>Approx.<small>~10 km</small></span></label>
+                    <label><input type="radio" name="locationPrecision" value="precise" /><span>Precise<small>Coordinates</small></span></label>
+                  </div>
+                  <p id="location-advice" class="inline-note"><strong>Privacy shutter on.</strong> Coordinates are excluded. Avoid recording nest locations for sensitive species.</p>
+                </fieldset>
+                <div id="coordinates-fields" class="field-grid two" hidden>
+                  <label>Latitude<input id="latitude" name="latitude" type="number" min="-90" max="90" step="any" inputmode="decimal" /></label>
+                  <label>Longitude<input id="longitude" name="longitude" type="number" min="-180" max="180" step="any" inputmode="decimal" /></label>
+                </div>
+                <div class="field-grid two">
+                  <label>Habitat<input id="habitat" name="habitat" type="text" maxlength="120" placeholder="Cliff, harbour, reedbed…" /></label>
+                  <label>Conditions<input id="conditions" name="conditions" type="text" maxlength="120" placeholder="Overcast, strong wind…" /></label>
+                </div>
+              </div>
+            </section>
+
+            <section id="look-section" class="form-section" aria-labelledby="look-title">
+              <div class="section-index" aria-hidden="true">02</div>
+              <div class="section-body">
+                <div class="form-section-title"><div><p class="eyebrow">Observed fact</p><h3 id="look-title">What you saw</h3></div></div>
+                <fieldset><legend>View quality</legend><div class="segmented compact">
+                  <label><input type="radio" name="viewQuality" value="not-seen" /><span>Not seen</span></label>
+                  <label><input type="radio" name="viewQuality" value="glimpse" checked /><span>Glimpse</span></label>
+                  <label><input type="radio" name="viewQuality" value="clear" /><span>Clear</span></label>
+                </div></fieldset>
+                <label>Visual traits<textarea id="visualTraits" name="visualTraits" rows="5" maxlength="1200" placeholder="Write only what you noticed: size, shape, flight, bill, plumage, behaviour…"></textarea><small>Specific negatives help too: “no black wing tips visible.”</small></label>
+              </div>
+            </section>
+
+            <section id="listen-section" class="form-section" aria-labelledby="listen-title">
+              <div class="section-index" aria-hidden="true">03</div>
+              <div class="section-body">
+                <div class="form-section-title"><div><p class="eyebrow">Observed fact</p><h3 id="listen-title">What you heard</h3></div></div>
+                <label>Call or song notes<textarea id="callNotes" name="callNotes" rows="4" maxlength="1000" placeholder="Rhythm, pitch, repetition, distance, direction—and whether the caller was visible."></textarea></label>
+                <label class="check-row"><input id="noCallHeard" name="noCallHeard" type="checkbox" /><span><strong>No call heard</strong><small>This is still useful observed evidence.</small></span></label>
+              </div>
+            </section>
+
+            <section id="candidate-section" class="form-section" aria-labelledby="candidate-title">
+              <div class="section-index" aria-hidden="true">04</div>
+              <div class="section-body">
+                <div class="form-section-title"><div><p class="eyebrow suggestion-label">Suggestion, not observation</p><h3 id="candidate-title">Candidate species</h3></div><button id="add-candidate" class="small-button" type="button">+ Add candidate</button></div>
+                <p class="section-intro">Record who suggested it and why it does or does not fit. Confidence is yours—not the app’s score.</p>
+                <div id="candidate-list" class="repeat-list"></div>
+              </div>
+            </section>
+
+            <section id="reference-section" class="form-section" aria-labelledby="reference-title">
+              <div class="section-index" aria-hidden="true">05</div>
+              <div class="section-body">
+                <div class="form-section-title"><div><p class="eyebrow">User-selected sources</p><h3 id="reference-title">Reference recordings</h3></div><button id="add-reference" class="small-button" type="button">+ Add reference</button></div>
+                <p class="section-intro">Link to material you have permission to use. This app stores the link and your notes; it never copies or hosts the audio.</p>
+                <div id="reference-list" class="repeat-list empty-repeat"><p class="repeat-empty">No references linked yet. This step is optional.</p></div>
+              </div>
+            </section>
+
+            <section id="decision-section" class="form-section" aria-labelledby="decision-title">
+              <div class="section-index" aria-hidden="true">06</div>
+              <div class="section-body">
+                <div class="form-section-title"><div><p class="eyebrow">Your conclusion</p><h3 id="decision-title">Decision</h3></div></div>
+                <fieldset><legend>Review status</legend><div class="decision-options">
+                  <label><input type="radio" name="decision" value="unresolved" checked /><span><strong>Unresolved</strong><small>Keep comparing</small></span></label>
+                  <label><input type="radio" name="decision" value="likely" /><span><strong>Likely</strong><small>Evidence leans one way</small></span></label>
+                  <label><input type="radio" name="decision" value="verified" /><span><strong>Verified</strong><small>Independently supported</small></span></label>
+                </div></fieldset>
+                <label>Current identification<input id="finalIdentity" name="finalIdentity" type="text" maxlength="120" placeholder="Leave blank while unresolved" /></label>
+                <label>Reasoning and next check<textarea id="reviewNotes" name="reviewNotes" rows="5" maxlength="1200" placeholder="What supports or contradicts the leading candidate? What would resolve it?"></textarea></label>
+              </div>
+            </section>
+
+            <div class="form-actions">
+              <button id="save-card" class="primary-button" type="submit">Save evidence card</button>
+              <div class="export-group" aria-label="Export this card">
+                <button id="export-md" class="secondary-button" type="button">Export Markdown</button>
+                <button id="export-csv" class="secondary-button" type="button">Export CSV</button>
+              </div>
+              <button id="new-card" class="text-button" type="button">Start a new card</button>
+            </div>
+          </form>
+
+          <aside class="card-readout" aria-labelledby="readout-title">
+            <div class="readout-top"><p class="eyebrow">Live card readout</p><span id="readiness-badge" class="readiness-badge">Draft · 1/5</span></div>
+            <article id="preview-card" class="evidence-card">
+              <header><span>Field record</span><strong id="preview-number">UNFILED</strong></header>
+              <h3 id="readout-title">Unresolved bird</h3>
+              <dl>
+                <div><dt>Observed</dt><dd id="preview-date">Add a date</dd></div>
+                <div><dt>Locality</dt><dd id="preview-location">Private locality</dd></div>
+                <div><dt>Leading candidate</dt><dd id="preview-candidate">None yet</dd></div>
+                <div><dt>Confidence</dt><dd id="preview-confidence">—</dd></div>
+              </dl>
+              <div class="meter" aria-hidden="true"><div id="meter-fill"></div><span></span></div>
+              <div class="observation-readout"><strong>Observed evidence</strong><p id="preview-evidence">Your visual and audio notes will appear here.</p></div>
+              <footer><span id="preview-status">UNRESOLVED</span><span id="preview-privacy">⌾ LOCALITY ONLY</span></footer>
+            </article>
+            <div id="readiness-list" class="readiness-list" aria-label="Card completeness"></div>
+            <p class="readout-note">A complete card is not a certain ID. It means your uncertainty has a useful trail.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section id="view-records" class="app-view records-view" aria-labelledby="records-title" hidden>
+        <div class="section-heading">
+          <div><p class="eyebrow">Device archive</p><h2 id="records-title" tabindex="-1">Saved evidence cards</h2></div>
+          <div class="archive-actions"><button id="export-json" class="secondary-button" type="button">Export backup</button><button id="import-json" class="secondary-button" type="button">Import backup</button><input id="import-file" type="file" accept="application/json,.json" hidden /></div>
+        </div>
+        <div id="records-list" class="records-list"></div>
+        <div id="records-empty" class="empty-state">
+          <span class="empty-dial" aria-hidden="true"></span>
+          <h3>No filed cards yet</h3>
+          <p>Your current draft is still safe. Save it when you have enough evidence to revisit later.</p>
+          <button class="primary-button" type="button" data-view="workbench">Return to workbench</button>
+        </div>
+      </section>
+
+      <section id="view-guide" class="app-view guide-view" aria-labelledby="guide-title" hidden>
+        <div class="section-heading"><div><p class="eyebrow">Method, not verdict</p><h2 id="guide-title" tabindex="-1">A two-minute evidence check</h2></div></div>
+        <div class="guide-grid">
+          <ol class="method-list">
+            <li><span>1</span><div><h3>Write from memory first</h3><p>Record shape, movement, habitat, and sound before opening another guide. This limits suggestion bias.</p></div></li>
+            <li><span>2</span><div><h3>Name alternatives</h3><p>Add at least two candidates when possible. Note one fit and one contradiction for each.</p></div></li>
+            <li><span>3</span><div><h3>Compare lawful references</h3><p>Link to openly licensed recordings or material you own. Confirm the caller was likely the bird you saw.</p></div></li>
+            <li><span>4</span><div><h3>Log at the evidence level</h3><p>“Unresolved” is a useful result. Only use “verified” when independent evidence supports the identification.</p></div></li>
+          </ol>
+          <aside class="guide-panel">
+            <h3>What this tool does not do</h3>
+            <p>It does not identify birds, download recordings, connect to BirdNET, Merlin, or eBird, or decide whether a record is reportable.</p>
+            <p>BirdNET, Merlin, and eBird are trademarks of their respective owners. This independent tool does not imply affiliation.</p>
+            <hr />
+            <h3>Your data, on your device</h3>
+            <p>Cards are stored in this browser’s IndexedDB. Use Export backup before clearing browser storage or changing phones.</p>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div><strong>Bird ID Evidence Card</strong><p>A small tool for better-calibrated field records.</p></div>
+      <nav aria-label="Legal and project"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="#guide" data-view="guide">How it works</a></nav>
+      <p class="generated-note">Field-console artwork generated for this product with the factory image model.</p>
+    </footer>
+
+    <dialog id="confirm-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-message">
+      <form method="dialog"><h2 id="dialog-title">Confirm action</h2><p id="dialog-message"></p><div class="dialog-actions"><button value="cancel" class="secondary-button">Cancel</button><button value="confirm" class="danger-button">Delete card</button></div></form>
+    </dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden><span id="toast-message"></span><button id="toast-action" type="button" hidden>Reload</button></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
