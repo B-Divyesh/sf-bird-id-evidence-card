@@ -33,10 +33,10 @@ Current production bundle from the repair build:
 - CSS: 21,740 bytes raw / 5.46 kB gzip (under 50 kB).
 - Service-worker precache: 18 files.
 
-Privacy checks remain local-first by design: IndexedDB is the only application store; reference URLs are text only and never fetched; there are no accounts, analytics, cookies, third-party scripts, remote fonts, or runtime APIs. `/privacy/`, `/terms/`, and the offline shell remain precached.
+Privacy checks remain local-first by design: IndexedDB is the only application store; reference URLs are text only and never fetched; there are no accounts, analytics, cookies, third-party scripts, remote fonts, or runtime APIs. `/privacy/`, `/terms/`, and the offline shell remain precached. `public/staticwebapp.config.json` also sets immutable caching for hashed assets, `no-cache` for the service worker, and the correct manifest content type for the static host.
 
 ## Deployment and follow-up
 
-Push `main` to trigger the factory’s static deployment for `bird-id-evidence-card.sociobot.in`; verify the deployed response identity against this final commit/build and repeat the live 390 px offline reload. No repository deployment configuration or infrastructure files are present, so immutable asset headers and manifest MIME remain deployment-platform policy rather than app-code settings. The app manifest itself is valid and remains part of `dist/`.
+Deploy `dist/` using `/opt/fleet/lib/deploy-static.sh bird-id-evidence-card dist`, then verify the deployed response identity against this final build and repeat the live 390 px offline reload.
 
 No known product gaps remain from verifier report `f18b6e83572b1d206c773d351306350d95ba23c7`.
