@@ -1,0 +1,22 @@
+{
+  "testedProductCommit": "ff0078b767cffde6bc6755080f6543a33c0bd395",
+  "cleanClone": "/tmp/bird-polish4-clean.8zNA83",
+  "claims": { "passed": 15, "failed": 0 },
+  "unitTests": { "passed": 10, "failed": 0 },
+  "browserTests": { "passed": 45, "failed": 0, "skipped": 1, "skipReason": "phone-only first-screen assertion in desktop project" },
+  "build": {
+    "distIndex": true,
+    "javascriptGzipBytes": 10651,
+    "cssGzipBytes": 5741,
+    "mobileHeroBytes": 14501
+  },
+  "localLighthouse": { "performance": 100, "accessibility": 100, "bestPractices": 100, "seo": 100, "lcpMs": 1355, "cls": 0, "tbtMs": 0 },
+  "deployment": {
+    "id": "b60c3431-eacc-44e5-ad48-9f644f740e6a",
+    "url": "https://bird-id-evidence-card.sociobot.in",
+    "checkedAt": "2026-08-28T14:45:24.357Z",
+    "matchedFiles": 28
+  },
+  "liveLighthouse": { "performance": 100, "accessibility": 100, "bestPractices": 100, "seo": 100, "lcpMs": 1146, "cls": 0, "tbtMs": 0 },
+  "knownGaps": []
+}

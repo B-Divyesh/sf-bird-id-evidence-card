@@ -1,0 +1,175 @@
+{
+  "checkedAt": "2026-08-28T14:46:15.681Z",
+  "baseURL": "https://bird-id-evidence-card.sociobot.in",
+  "matchedFiles": 28,
+  "files": [
+    {
+      "path": "/404.html",
+      "status": 200,
+      "match": true,
+      "bytes": 2668
+    },
+    {
+      "path": "/app-icon.svg",
+      "status": 200,
+      "match": true,
+      "bytes": 520
+    },
+    {
+      "path": "/assets/field-console-480.avif",
+      "status": 200,
+      "match": true,
+      "bytes": 14501
+    },
+    {
+      "path": "/assets/field-console-480.webp",
+      "status": 200,
+      "match": true,
+      "bytes": 25542
+    },
+    {
+      "path": "/assets/field-console-768.avif",
+      "status": 200,
+      "match": true,
+      "bytes": 45234
+    },
+    {
+      "path": "/assets/field-console-768.jpg",
+      "status": 200,
+      "match": true,
+      "bytes": 135138
+    },
+    {
+      "path": "/assets/field-console-768.webp",
+      "status": 200,
+      "match": true,
+      "bytes": 64356
+    },
+    {
+      "path": "/assets/field-console-social.jpg",
+      "status": 200,
+      "match": true,
+      "bytes": 131313
+    },
+    {
+      "path": "/assets/index-BYGDt_ji.js",
+      "status": 200,
+      "match": true,
+      "bytes": 30323
+    },
+    {
+      "path": "/assets/index-BYGDt_ji.js.map",
+      "status": 200,
+      "match": true,
+      "bytes": 83702
+    },
+    {
+      "path": "/assets/style-BZSDC8IR.css",
+      "status": 200,
+      "match": true,
+      "bytes": 23307
+    },
+    {
+      "path": "/demo/index.html",
+      "status": 200,
+      "match": true,
+      "bytes": 18656
+    },
+    {
+      "path": "/guide/index.html",
+      "status": 200,
+      "match": true,
+      "bytes": 18691
+    },
+    {
+      "path": "/icon-192.png",
+      "status": 200,
+      "match": true,
+      "bytes": 5724
+    },
+    {
+      "path": "/icon-512.png",
+      "status": 200,
+      "match": true,
+      "bytes": 16900
+    },
+    {
+      "path": "/icon-maskable-512.png",
+      "status": 200,
+      "match": true,
+      "bytes": 16900
+    },
+    {
+      "path": "/index.html",
+      "status": 200,
+      "match": true,
+      "bytes": 18655
+    },
+    {
+      "path": "/legal.css",
+      "status": 200,
+      "match": true,
+      "bytes": 5763
+    },
+    {
+      "path": "/legal.js",
+      "status": 200,
+      "match": true,
+      "bytes": 198
+    },
+    {
+      "path": "/manifest.json",
+      "status": 200,
+      "match": true,
+      "bytes": 689
+    },
+    {
+      "path": "/manifest.webmanifest",
+      "status": 200,
+      "match": true,
+      "bytes": 689
+    },
+    {
+      "path": "/offline.html",
+      "status": 200,
+      "match": true,
+      "bytes": 3151
+    },
+    {
+      "path": "/privacy/index.html",
+      "status": 200,
+      "match": true,
+      "bytes": 3282
+    },
+    {
+      "path": "/records/index.html",
+      "status": 200,
+      "match": true,
+      "bytes": 18629
+    },
+    {
+      "path": "/robots.txt",
+      "status": 200,
+      "match": true,
+      "bytes": 87
+    },
+    {
+      "path": "/sitemap.xml",
+      "status": 200,
+      "match": true,
+      "bytes": 542
+    },
+    {
+      "path": "/sw.js",
+      "status": 200,
+      "match": true,
+      "bytes": 3753
+    },
+    {
+      "path": "/terms/index.html",
+      "status": 200,
+      "match": true,
+      "bytes": 3169
+    }
+  ]
+}

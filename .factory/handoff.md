@@ -1,39 +1,59 @@
-# Review 4 handoff
+# Polish 4 handoff
 
 ## Outcome
 
-Adversarial first-read review 4 is complete. Verdict: **FAIL** with two blocking findings. No product code was modified.
+Perfection-loop round 4 is complete. Every finding from reviews 1–4 is closed, including both review-4 blockers. The deployed product remains an offline-first static PWA with its original field-instrument visual system.
 
-The live first screen, sample demo, real/demo storage isolation, registered claims, main route structure, accessibility, and build all pass. The blockers are documented in `.factory/review-4.md`:
+Live: <https://bird-id-evidence-card.sociobot.in/>
 
-1. `/offline.html` violates the live CSP, renders unstyled with a 17 px recovery target, and lacks the shared metadata/header/footer shell.
-2. Previously flagged jargon and inconsistent terms remain in live and reachable state copy, including `field console`, `archive`, `IDs`, `locally`, and the generic dialog heading `Confirm action`.
+Demo: <https://bird-id-evidence-card.sociobot.in/demo>
 
-## Verification performed
+Tested product commit: `ff0078b767cffde6bc6755080f6543a33c0bd395`
 
-- Fresh live Chromium contexts at 390 × 844 and 1440 × 900.
-- One-click demo entry, realistic populated first screen, reset, exit, seeded real-data sentinel isolation, and separate `demo:bird-id-evidence-card` storage.
-- Live offline reload/editing and same-origin-only request interception.
-- Raw and rendered route status/title/h1/metadata checks, History API focus/Back behavior, shared chrome, link crawl, touch targets, and designed 404.
-- Playwright axe checks on all six main routes; zero violations.
-- Direct `/offline.html` CSP, console, metadata, chrome, and target-size inspection.
-- Clean clone `/tmp/bird-review4-clean.ABUpUp`: `npm ci`, all 15 exact `.factory/claims.json` commands independently, then full `npm test`.
-- Full suite result: 9 unit tests passed; build verification passed; 43 browser tests passed; one intended desktop skip.
-- Build budgets: JS 10,624 bytes gzip; CSS 5,743 bytes gzip; mobile hero 14,501 bytes.
-- `./scripts/verify-url.sh https://bird-id-evidence-card.sociobot.in/`: passed.
+Deployment: `b60c3431-eacc-44e5-ad48-9f644f740e6a`
 
-## Reproduce
+## What changed
+
+- Rebuilt `/offline.html` with the shared product header/footer, complete metadata, one h1, legal links, self-hosted styles, and 44 px recovery actions.
+- Made uncached offline navigations choose the fallback before attempting a network request.
+- Replaced every flagged state term with consistent evidence-card language and action-specific dialog/update wording.
+- Added offline fallback and dynamic-copy regression coverage to route, metadata, accessibility, touch-target, console, copy-audit, and service-worker tests.
+- Updated the catalog sentence, claim wording, build version `v1.0.4`, copy audit, and cumulative finding map.
+
+## Verification
+
+From clean clone `/tmp/bird-polish4-clean.8zNA83` at `ff0078b767cffde6bc6755080f6543a33c0bd395`:
+
+- `npm ci` — pass, zero audit vulnerabilities.
+- Every exact command in `.factory/claims.json` — 15/15 pass independently.
+- `npm test` — pass: 10 unit tests, 45 browser tests, one intentional desktop skip.
+- `npm run build` and `npm run test:build` — pass; `dist/index.html` present.
+- Budgets — JS 10,651 bytes gzip; CSS 5,741 bytes gzip; mobile hero 14,501 bytes.
+- Playwright axe — zero violations across app, demo, saved cards, guide, Privacy, Terms, 404, and offline routes in tested treatments.
+- Offline — demo editing/reload, Privacy, Terms, and an uncached service-worker fallback pass with networking disabled.
+- Privacy — same-origin requests only; no cookies or localStorage keys; demo never changed the seeded real database.
+
+After deployment:
+
+- `./scripts/verify-url.sh https://bird-id-evidence-card.sociobot.in/` — pass.
+- `npm run test:live -- https://bird-id-evidence-card.sociobot.in .factory/evidence/polish-4/live` — pass at `2026-08-28T14:45:24.357Z`.
+- Seven public routes returned 200 with correct title, h1, metadata, shared chrome, no mobile overflow, 44 px targets, and zero axe violations.
+- Unknown online URL returned the designed 404 with HTTP 404; unknown offline URL returned the designed fallback from the service worker.
+- All 28 served build files matched local `dist/` by SHA-256.
+- Live Lighthouse — performance 100, accessibility 100, best practices 100, SEO 100; LCP 1,146 ms; CLS 0; TBT 0.
+
+Evidence: [cumulative map](polish-4.md), [live audit](evidence/polish-4/live/live-audit.json), [byte match](evidence/polish-4/live/byte-match.json), [live offline screenshot](evidence/polish-4/live/offline-fallback-mobile.png), and [live Lighthouse](evidence/polish-4/live/lighthouse.json).
+
+## Run and verify
 
 ```sh
 npm ci
 npm test
 npm run build
-npm run test:live -- https://bird-id-evidence-card.sociobot.in /tmp/bird-review-4-live
 ./scripts/verify-url.sh https://bird-id-evidence-card.sociobot.in/
+npm run test:live -- https://bird-id-evidence-card.sociobot.in .factory/evidence/polish-4/live
 ```
 
-Open `/offline.html` in a fresh browser context with console capture to reproduce F-4-1.
+## Known gaps and next steps
 
-## Next steps
-
-Repair the two findings exactly as specified in `.factory/review-4.md`, add offline-fallback and dynamic-copy coverage, deploy through the factory workflow, and rerun the full adversarial checklist from scratch.
+None.
